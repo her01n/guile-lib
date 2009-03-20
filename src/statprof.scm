@@ -620,7 +620,7 @@ The return value is a list of nodes, each of which is of the type:
 @code
  node ::= (@var{proc} @var{count} . @var{nodes})
 @end code"
-  (lists->trees (map stack->procedures stacks) procedure=?))
+  (cons #t (lists->trees (map stack->procedures stacks) procedure=?)))
 
 (define-macro-with-docs (with-statprof . args)
   "Profiles the expressions in its body.
