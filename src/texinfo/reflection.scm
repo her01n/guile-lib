@@ -153,19 +153,41 @@
             (texi-fragment->stexi str)))
       `(*fragment* (verbatim ,str))))
 
+(define method-formals
+  (and (defined? 'method-formals) method-formals))
+
 (define (method-stexi-arguments method)
-  (define (arg-texinfo arg)
-    `(" (" (var ,(symbol->string (car arg))) " "
-      (code ,(symbol->string (cadr arg))) ")"))
-  (let lp ((bindings (cadr (method-source method))) (out '()))
-    (cond
-     ((null? bindings)
-      (reverse out))
-     ((not (pair? (car bindings)))
-      (append (reverse out) (arg-texinfo bindings) (list "...")))
-     (else
-      (lp (cdr bindings)
-          (append (reverse (arg-texinfo (car bindings))) out))))))
+  (cond
+   (method-formals
+    (let lp ((formals (method-formals method))
+             (specializers (method-specializers method))
+             (out '()))
+      (define (arg-texinfo formal specializer)
+        `(" (" (var ,(symbol->string formal)) " "
+          (code ,(symbol->string (class-name specializer))) ")"))
+      (cond
+       ((null? formals) (reverse out))
+       ((pair? formals)
+        (lp (cdr formals) (cdr specializers)
+            (append (reverse (arg-texinfo (car formals) (car specializers)))
+                    out)))
+       (else
+        (append (reverse out) (arg-texinfo formals specializers)
+                (list "..."))))))
+   ((method-source method)
+    (let lp ((bindings (cadr (method-source method))) (out '()))
+      (define (arg-texinfo arg)
+        `(" (" (var ,(symbol->string (car arg))) " "
+          (code ,(symbol->string (cadr arg))) ")"))
+      (cond
+       ((null? bindings)
+        (reverse out))
+       ((not (pair? (car bindings)))
+        (append (reverse out) (arg-texinfo bindings) (list "...")))
+       (else
+        (lp (cdr bindings)
+            (append (reverse (arg-texinfo (car bindings))) out))))))
+   (else (warn method) '())))
 
 (define/kwargs (object-stexi-documentation object (name "[unknown]")
                                            (force #f))
