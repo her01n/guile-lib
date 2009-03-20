@@ -358,7 +358,7 @@ than @code{statprof-stop}, @code{#f} otherwise."
         (set! last-start-time #f))))
 
 (define (statprof-reset sample-seconds sample-microseconds count-calls?
-                        full-stacks?)
+                        . full-stacks?)
   "Reset the statprof sampler interval to @var{sample-seconds} and
 @var{sample-microseconds}. If @var{count-calls?} is true, arrange to
 instrument procedure calls as well as collecting statistical profiling
@@ -379,7 +379,7 @@ Enables traps and debugging as necessary."
       (begin
         (trap-set! apply-frame-handler count-call)
         (trap-enable 'traps)))
-  (set! record-full-stacks? full-stacks?)
+  (set! record-full-stacks? (and (pair? full-stacks?) (car full-stacks?)))
   (set! stacks '())
   (debug-enable 'debug)
   (sigaction SIGPROF profile-signal-handler)

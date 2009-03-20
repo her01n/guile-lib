@@ -1,6 +1,6 @@
-scmdir=$(prefix)/share/guile/site
+moddir=$(prefix)/share/guile/site
 
-nobase_dist_scm_DATA = \
+NOCOMP_SOURCES = \
 	apicheck.scm			\
 	config/load.scm			\
 	container/delay-tree.scm	\
@@ -54,3 +54,19 @@ nobase_dist_scm_DATA = \
 	texinfo.scm			\
 	text/parse-lalr.scm		\
 	unit-test.scm
+
+if HAVE_GUILE_COMPILE
+GOBJECTS = $(SOURCES:%.scm=%.go)
+else
+GOBJECTS =
+endif
+
+nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES) $(GOBJECTS)
+EXTRA_DIST = $(SOURCES) $(NOCOMP_SOURCES)
+
+CLEANFILES = $(GOBJECTS)
+
+SUFFIXES = .scm .go
+.scm.go:
+	$(MKDIR_P) `dirname $@`
+	$(GUILE_COMPILE) -o "$@" "$<"
