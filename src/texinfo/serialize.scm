@@ -55,12 +55,15 @@
             ((null? (car in)) (lp (cdr in) out))
             (else (lp (cdr in) (cons (car in) out)))))))
 
-(define (include exp lp command type formals args accum)
-  (list* "\n"
-         (list-intersperse
-          args
-          " ")
-         " " command "@" accum))
+;; Why? Well, because syntax-case defines `include', and carps about its
+;; wrong usage below...
+(eval-when (eval load compile)
+  (define (include exp lp command type formals args accum)
+    (list* "\n"
+           (list-intersperse
+            args
+            " ")
+           " " command "@" accum)))
 
 (define (empty-command exp lp command type formals args accum)
   (list* " " command "@" accum))

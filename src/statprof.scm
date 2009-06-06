@@ -554,29 +554,30 @@ Note that stacks are only collected if the @var{full-stacks?} argument
 to @code{statprof-reset} is true."
   stacks)
 
-(if (defined? 'compile)
-    (define (procedure=? a b)
-      (cond
-       ((eq? a b))
-       ((and ((@ (system vm program) program?) a)
-             ((@ (system vm program) program?) b))
-        (eq? ((@ (system vm program) program-objcode) a)
-             ((@ (system vm program) program-objcode) b)))
-       ((and (closure? a) (closure? b)
-             (procedure-source a) (procedure-source b))
-        (and (eq? (procedure-name a) (procedure-name b))
-             (equal? (procedure-source a) (procedure-source b))))
-       (else
-        #f)))
-    (define (procedure=? a b)
-      (cond
-       ((eq? a b))
-       ((and (closure? a) (closure? b)
-             (procedure-source a) (procedure-source b))
-        (and (eq? (procedure-name a) (procedure-name b))
-             (equal? (procedure-source a) (procedure-source b))))
-       (else
-        #f))))
+(define procedure=?
+  (if (false-if-exception (resolve-interface '(system base compile)))
+      (lambda (a b)
+        (cond
+         ((eq? a b))
+         ((and ((@ (system vm program) program?) a)
+               ((@ (system vm program) program?) b))
+          (eq? ((@ (system vm program) program-objcode) a)
+               ((@ (system vm program) program-objcode) b)))
+         ((and (closure? a) (closure? b)
+               (procedure-source a) (procedure-source b))
+          (and (eq? (procedure-name a) (procedure-name b))
+               (equal? (procedure-source a) (procedure-source b))))
+         (else
+          #f)))
+      (lambda (a b)
+        (cond
+         ((eq? a b))
+         ((and (closure? a) (closure? b)
+               (procedure-source a) (procedure-source b))
+          (and (eq? (procedure-name a) (procedure-name b))
+               (equal? (procedure-source a) (procedure-source b))))
+         (else
+          #f)))))
 
 ;; tree ::= (car n . tree*)
 

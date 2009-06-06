@@ -330,19 +330,19 @@ taken from the script's commentary, and will be returned in the
 
 (cond
  ((defined? 'add-value-help-handler!)
-  (define (stexi-help-handler name value)
-    (stexi->plain-text (object-stexi-documentation value name #:force #t)))
-  (define (module-help-handler name)
+  (add-value-help-handler! 
+   (lambda (name value)
+     (stexi->plain-text
+      (object-stexi-documentation value name #:force #t))))
+  (add-name-help-handler!
+   (lambda (name)
     (and (list? name)
          (and-map symbol? name)
-         (stexi->plain-text (module-stexi-documentation name))))
+         (stexi->plain-text (module-stexi-documentation name)))))))
 
-  (add-value-help-handler! stexi-help-handler)
-  (add-name-help-handler! module-help-handler))
- (else
-  ;; we're dealing with an old (ice-9 session); fondle it to get
-  ;; module-commentary
-  (define module-commentary (@@ (ice-9 session) module-commentary))))
+;; we could be dealing with an old (ice-9 session); fondle it to get
+;; module-commentary
+(define module-commentary (@@ (ice-9 session) module-commentary))
 
 (define (package-stexi-standard-copying name version updated years
                                         copyright-holder permissions)
