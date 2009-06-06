@@ -114,14 +114,16 @@ thing.
     `(let ((,lambda-gensym
             (lambda ,args-gensym
               ,@(if (string? (car BODY)) (list (car BODY)) '())
-              (let* ((,positional (,until keyword? ,args-gensym))
+              (let* ((,positional ((@@ (scheme kwargs) until)
+                                   keyword? ,args-gensym))
                      (,keyword (list-tail ,args-gensym (length ,positional))))
                 (if (> (length ,positional) ,nbindings)
                     (error "Too many positional arguments."))
-                (,let-optional ,positional
+                ((@ (ice-9 optargs) let-optional) ,positional
                   ,CANONICAL-BINDINGS
+                  #;
                   ,@(map car CANONICAL-BINDINGS)
-                  (,let-keywords ,keyword
+                  ((@ (ice-9 optargs) let-keywords) ,keyword
                     #f
                     ,(map list VARIABLES VARIABLES)
                     ,@(if (string? (car BODY)) (cdr BODY) BODY)))))))
@@ -134,4 +136,4 @@ thing.
   "Defines a function that takes kwargs. @xref{scheme kwargs
 lambda/kwargs}, for more information.
 "
-  `(define ,(car what) (,lambda/kwargs ,(cdr what) ,@body)))
+  `(define ,(car what) ((@ (scheme kwargs) lambda/kwargs) ,(cdr what) ,@body)))

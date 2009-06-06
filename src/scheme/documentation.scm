@@ -27,12 +27,8 @@
             define-generic-with-docs define-class-with-docs))
 
 (define-macro (define-macro-with-docs name-and-args docs . body)
-  `(begin
-     (define-macro ,name-and-args ,@body)
-     (set-object-property! ,(car name-and-args) 'documentation ,docs)
-     (if #f #f)))
-(set-object-property! define-macro-with-docs 'documentation
-  "Define a macro with documentation.")
+  "Define a macro with documentation."
+  `(define-macro ,name-and-args ,docs ,@body))
 
 (define-macro-with-docs (define-with-docs sym docs val)
   "Define a variable with documentation."

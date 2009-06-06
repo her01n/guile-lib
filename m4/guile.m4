@@ -16,6 +16,8 @@
 ## License along with this library; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+# serial 9
+
 ## Index
 ## -----
 ##
@@ -105,7 +107,7 @@ AC_DEFUN([GUILE_FLAGS],
 AC_DEFUN([GUILE_SITE_DIR],
  [AC_REQUIRE([GUILE_PROGS])dnl
   AC_MSG_CHECKING(for Guile site directory)
-  GUILE_SITE=`[$GUILE_CONFIG] info pkgdatadir`/site
+  GUILE_SITE=`[$GUILE_CONFIG] info sitedir`
   AC_MSG_RESULT($GUILE_SITE)
   AC_SUBST(GUILE_SITE)
  ])
