@@ -84,13 +84,15 @@ referenced C implementation into Scheme.
 ;; Return a new, initialized MD5 context.
 (define (md5-init)
   (let ((buffer-space (make-string 64 #\nul)))
-    `((values . ((a . #x67452301)
-		 (b . #xEFCDAB89)
-		 (c . #x98BADCFE)
-		 (d . #x10325476)))
-      (buffer . ((space      . ,buffer-space)
-		 (data-size  . 0)))
-      (stats  . ((blocks-processed . 0))))))
+    ;; Since this is a mutable state, cons it up
+    (list
+     (cons 'values (list (cons 'a #x67452301)
+                         (cons 'b #xEFCDAB89)
+                         (cons 'c #x98BADCFE)
+                         (cons 'd #x10325476)))
+     (cons 'buffer (list (cons 'space buffer-space)
+                         (cons 'data-size 0)))
+     (cons 'stats (list (cons 'blocks-processed 0))))))
 
 (define (md5-func-f b c d)
   (logior (logand b c) (logand (lognot b) d)))
