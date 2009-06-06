@@ -1,6 +1,6 @@
 moddir=$(prefix)/share/guile/site
 
-NOCOMP_SOURCES = \
+SOURCES = \
 	apicheck.scm			\
 	config/load.scm			\
 	container/delay-tree.scm	\
@@ -39,7 +39,6 @@ NOCOMP_SOURCES = \
 	sxml/upstream/SXML-tree-trans.scm \
 	sxml/upstream/SXPath-old.scm	\
 	sxml/upstream/input-parse.scm	\
-	sxml/upstream/packages.scm	\
 	sxml/upstream/assert.scm	\
 	sxml/xpath.scm			\
 	sxml/ssax-simple.scm		\
@@ -68,5 +67,4 @@ CLEANFILES = $(GOBJECTS)
 
 SUFFIXES = .scm .go
 .scm.go:
-	$(MKDIR_P) `dirname $@`
-	$(GUILE_COMPILE) -o "$@" "$<"
+	$(top_builddir)/dev-environ $(GUILE_COMPILE) -o "$@" "$<"
