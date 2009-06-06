@@ -28,7 +28,7 @@
   #:use-module (oop goops))
 
 (define-class <async-queue> ()
-  (queue #:init-form (make-queue) #:getter queue)
+  (queue #:init-form (make-q) #:getter queue)
   (condv #:init-form (make-condition-variable) #:getter condv)
   (mutex #:init-form (make-mutex) #:getter mutex)
   (waiting-threads #:init-value 0 #:accessor waiting-threads))
@@ -49,10 +49,10 @@
 calling thread is blocked until an element is enqueued by another
 thread."
   (with-mutex (mutex q)
-    (cond ((queue-empty? (queue q))
+    (cond ((q-empty? (queue q))
            (set! (waiting-threads q) (+ (waiting-threads q) 1))
            (let loop ()
-             (cond ((queue-empty? (queue q))
+             (cond ((q-empty? (queue q))
                     (wait-condition-variable (condv q) (mutex q))
                     (loop))))
            (set! (waiting-threads q) (- (waiting-threads q) 1))))
