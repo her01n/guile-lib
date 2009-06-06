@@ -136,22 +136,140 @@ Examples:
     (setvbuf (cdr result) _IONBF)
     result))
 
-(defmacro-public run-concurrently+ (proc . connections)
-  (let ((pid (gensym))
-	(ports (gensym)))
-    `(let ((,pid (primitive-fork))
-	   (,ports (list)))
-       (cond ((= ,pid 0)
-	      ;; child
-	      (set-batch-mode?! #t)
-	      ,@(os:process:pipe-make-redir-commands connections ports)
-	      ,proc
-	      (primitive-exit 1))
-	     (else
-	      ,pid)))))
+;;; generate the code needed to set up redirections for a child process.
+(eval-when (eval load compile)
+  (define (os:process:pipe-make-redir-commands connections portvar)
+    (let next-conn ((conns connections)
+                    (insert (list)) ;; result
+                    (slave #f)
+                    (no-auto-close #f))
+      (cond ((null? conns)
+             (cond (slave
+                    (next-conn conns
+                               (append insert
+                                       (list
+                                        ;; make a new session, drop old ctty.
+                                        '(setsid)
+                                        ;; get a new ctty if possible.
+                                        '(cond ((isatty? (current-input-port))
+                                                ;; opening the tty should make
+                                                ;; it the ctty, now we are the
+                                                ;; session leader.
+                                                (let ((name
+                                                       (ttyname 
+                                                        (current-input-port)))
+                                                      (mode 
+                                                          (port-mode
+                                                           (current-input-port))))
+                                                  (close-port
+                                                   (current-input-port))
+                                                  (set-current-input-port
+                                                   (open-file name mode))))
+                                               ;; try this too -- required
+                                               ;; under BSD?.
+                                        ;(%set-ctty (current-input-port))
+                                               )))
+                               #f
+                               no-auto-close))
+                   (no-auto-close
+                    (append insert
+                            (list
+                             `(map (lambda (p)
+                                     (false-if-exception
+                                      (close-fdes (fileno p))))
+                                   ,portvar))))
+                   (else
+                    (append insert
+                            (list
+                             `(let loop ((pts (append
+                                               (list
+                                                (current-input-port)
+                                                (current-output-port)
+                                                (current-error-port))
+                                               ,portvar)) ; keep open.
+                                         (fds (list))) ; fdes keep open.
+                                (if (null? pts)
+                                    (port-for-each (lambda (p)
+                                                     (let ((f
+                                                            (false-if-exception
+                                                             (fileno p))))
+                                                       (if (and f
+                                                                (not
+                                                                 (memv f fds)))
+                                                           (false-if-exception
+                                                            (close-fdes f))))))
+                                    (loop (cdr pts)
+                                          (let ((fd (false-if-exception 
+                                                     (fileno (car pts)))))
+                                            (if fd
+                                                (cons fd fds)
+                                                fds))))))))))
+            (else
+             (let* ((c (car conns)))
+               (cond ((eq? c #:slave)
+                      (next-conn (cdr conns)
+                                 insert
+                                 #t
+                                 no-auto-close))
+                     ((eq? c #:no-auto-close)
+                      (next-conn (cdr conns)
+                                 insert
+                                 slave
+                                 #t))
+                     ((eq? c #:foreground) ; would be processed earlier.
+                      (next-conn (cdr conns)
+                                 insert
+                                 slave
+                                 no-auto-close))
+                     ((= (length c) 1)
+                      (next-conn
+                       (cdr conns)
+                       (cons
+                        `(set! ,portvar (cons ,(car c) ,portvar))
+                        insert)
+                       slave
+                       no-auto-close))
+                     (else
+                      (let* ((reversed (number? (cadr c)))
+                             (in (if reversed
+                                     (cadr c)
+                                     (car c)))
+                             (out (if reversed
+                                      (car c)
+                                      (cadr c))))
+                        (next-conn (cdr conns)
+                                   (append
+                                    (os:process:pipe-make-commands
+                                     in out portvar)
+                                    insert)
+                                   slave
+                                   no-auto-close)))))))))
 
-(set-object-property! run-concurrently+ 'documentation
-"Evaluate an expression in a new background process.  If no connection
+;;; returns the commands for redirecting a single port in the child.
+  (define (os:process:pipe-make-commands fdes port portvar)
+    (if (= fdes 0)
+        `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
+            (set-current-input-port newport)))
+        (if (= fdes 1)
+            `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
+                (set-current-output-port newport)))
+            (if (= fdes 2)
+                `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
+                    (set-current-error-port newport)))
+                `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
+                    (set! ,portvar (cons newport ,portvar))))))))
+
+;;; safely redirect a port to a file descriptor.  it must usually be
+;;; duplicated, in case it's redirected more than once.
+  (define (os:process:setup-redirected-port port fdes)
+    (if (= (fileno port) fdes)
+        port
+        (let ((newport (duplicate-port port (port-mode port))))
+          (primitive-move->fdes newport fdes)
+          newport))))
+
+(defmacro-public run-concurrently+ (proc . connections)
+  "Evaluate an expression in a new background process.  If no connection
 terms are specified, then all ports except @code{current-input-port},
 @code{current-output-port} and  @code{current-error-port} will be
 closed in the new process.  The file descriptors
@@ -197,145 +315,22 @@ Example:
 @example
  (let ((p (open-input-file \"/etc/passwd\")))
    (run-concurrently+ (tail-call-program \"cat\") (p 0)))
-@end example")
-
-;;; generate the code needed to set up redirections for a child process.
-(define (os:process:pipe-make-redir-commands connections portvar)
-  (let next-conn ((conns connections)
-		  (insert (list))         ;; result
-		  (slave #f)
-		  (no-auto-close #f))
-    (cond ((null? conns)
-	   (cond (slave
-		  (next-conn conns
-			     (append insert
-				     (list
-				      ;; make a new session, drop old ctty.
-				      '(setsid)
-				      ;; get a new ctty if possible.
-				      '(cond ((isatty? (current-input-port))
-					      ;; opening the tty should make
-					      ;; it the ctty, now we are the
-					      ;; session leader.
-					      (let ((name
-						     (ttyname 
-						      (current-input-port)))
-						    (mode 
-							(port-mode
-							 (current-input-port))))
-						(close-port
-						 (current-input-port))
-						(set-current-input-port
-						 (open-file name mode))))
-					     ;; try this too -- required
-					     ;; under BSD?.
-					     ;(%set-ctty (current-input-port))
-					     )))
-			     #f
-			     no-auto-close))
-		 (no-auto-close
-		  (append insert
-			  (list
-			   `(map (lambda (p)
-				   (false-if-exception
-				    (close-fdes (fileno p))))
-				 ,portvar))))
-		 (else
-		  (append insert
-			  (list
-			   `(let loop ((pts (append
-					     (list
-					      (current-input-port)
-					      (current-output-port)
-					      (current-error-port))
-					     ,portvar)) ; keep open.
-				       (fds (list))) ; fdes keep open.
-			      (if (null? pts)
-				  (port-for-each (lambda (p)
-						   (let ((f
-							  (false-if-exception
-							   (fileno p))))
-						     (if (and f
-							      (not
-							       (memv f fds)))
-							 (false-if-exception
-							  (close-fdes f))))))
-				  (loop (cdr pts)
-					(let ((fd (false-if-exception 
-						   (fileno (car pts)))))
-					  (if fd
-					      (cons fd fds)
-					      fds))))))))))
-	  (else
-	   (let* ((c (car conns)))
-	     (cond ((eq? c #:slave)
-		    (next-conn (cdr conns)
-			       insert
-			       #t
-			       no-auto-close))
-		   ((eq? c #:no-auto-close)
-		    (next-conn (cdr conns)
-			       insert
-			       slave
-			       #t))
-		   ((eq? c #:foreground) ; would be processed earlier.
-		    (next-conn (cdr conns)
-			       insert
-			       slave
-			       no-auto-close))
-		   ((= (length c) 1)
-		    (next-conn
-		     (cdr conns)
-		     (cons
-		      `(set! ,portvar (cons ,(car c) ,portvar))
-		      insert)
-		     slave
-		     no-auto-close))
-		   (else
-		    (let* ((reversed (number? (cadr c)))
-			   (in (if reversed
-				   (cadr c)
-				   (car c)))
-			   (out (if reversed
-				    (car c)
-				    (cadr c))))
-		      (next-conn (cdr conns)
-				 (append
-				  (os:process:pipe-make-commands
-				   in out portvar)
-				  insert)
-				 slave
-				 no-auto-close)))))))))
-
-
-;;; returns the commands for redirecting a single port in the child.
-(define (os:process:pipe-make-commands fdes port portvar)
-  (if (= fdes 0)
-      `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
-	  (set-current-input-port newport)))
-      (if (= fdes 1)
-	  `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
-	      (set-current-output-port newport)))
-	  (if (= fdes 2)
-	      `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
-		  (set-current-error-port newport)))
-	      `((let ((newport (os:process:setup-redirected-port ,port ,fdes)))
-		  (set! ,portvar (cons newport ,portvar))))))))
-
-;;; safely redirect a port to a file descriptor.  it must usually be
-;;; duplicated, in case it's redirected more than once.
-(define (os:process:setup-redirected-port port fdes)
-  (if (= (fileno port) fdes)
-      port
-      (let ((newport (duplicate-port port (port-mode port))))
-	(primitive-move->fdes newport fdes)
-	newport)))
+@end example"
+  (let ((pid (gensym))
+	(ports (gensym)))
+    `(let ((,pid (primitive-fork))
+	   (,ports (list)))
+       (cond ((= ,pid 0)
+	      ;; child
+	      (set-batch-mode?! #t)
+	      ,@(os:process:pipe-make-redir-commands connections ports)
+	      ,proc
+	      (primitive-exit 1))
+	     (else
+	      ,pid)))))
 
 (defmacro run+ (expr . connections)
-  `(cdr (waitpid (run-concurrently+ ,expr #:foreground ,@connections))))
-
-(set-object-property! run+ 'documentation
-"Evaluate an expression in a new foreground process and wait for its
+  "Evaluate an expression in a new foreground process and wait for its
 completion.  If no connection terms are specified, then all ports except
 @code{current-input-port}, @code{current-output-port} and
 @code{current-error-port} will be closed in the new process.
@@ -353,7 +348,8 @@ The @code{#:foreground} keyword is implied.
 @end example
 @example
  (run+ (tail-call-program \"cat\" \"/etc/passwd\"))
-@end example")
+@end example"
+  `(cdr (waitpid (run-concurrently+ ,expr #:foreground ,@connections))))
 
 (define (run prog . args)
 "Execute @var{prog} in a new foreground process
@@ -422,6 +418,29 @@ Example:
 	 (error "bad mode string: " mode))))
 	
 (defmacro tail-call-pipeline+ args
+  "Replace the current process image with a pipeline of connected processes.
+
+Each process is specified by an expression and each pair of processes
+has a connection list with pairs of file descriptors.  E.g.,
+@code{((1 0) (2 0))} specifies that file descriptors 1 and 2 are to be
+connected to file descriptor 0.  This may also be written
+as @code{((1 2 0))}.
+
+The expressions in the pipeline are run in new background processes.
+The foreground process waits for them all to terminate.  The exit
+status is derived from the status of the process at the tail of the
+pipeline: its exit status if it terminates normally, otherwise 128
+plus the number of the signal that caused it to terminate.
+
+The signal handlers will be reset and file descriptors set up as for
+@code{tail-call-program}.  Like @code{tail-call-program} it does not
+close open ports or flush buffers.
+
+Example:
+@example
+ (tail-call-pipeline+ (tail-call-program \"ls\" \"/etc\") ((1 0))
+                      (tail-call-program \"grep\" \"passwd\"))
+@end example"
   (let* ((pipes (gensym))
 	 (split-comps (pipe-split-components args))
 	 (expressions (car split-comps))
@@ -477,31 +496,6 @@ Example:
 			 (next-pid waiting-for result)))))
 	       (else
 		(primitive-exit result)))))))
-
-(set-object-property! tail-call-pipeline+ 'documentation
-"Replace the current process image with a pipeline of connected processes.
-
-Each process is specified by an expression and each pair of processes
-has a connection list with pairs of file descriptors.  E.g.,
-@code{((1 0) (2 0))} specifies that file descriptors 1 and 2 are to be
-connected to file descriptor 0.  This may also be written
-as @code{((1 2 0))}.
-
-The expressions in the pipeline are run in new background processes.
-The foreground process waits for them all to terminate.  The exit
-status is derived from the status of the process at the tail of the
-pipeline: its exit status if it terminates normally, otherwise 128
-plus the number of the signal that caused it to terminate.
-
-The signal handlers will be reset and file descriptors set up as for
-@code{tail-call-program}.  Like @code{tail-call-program} it does not
-close open ports or flush buffers.
-
-Example:
-@example
- (tail-call-pipeline+ (tail-call-program \"ls\" \"/etc\") ((1 0))
-                      (tail-call-program \"grep\" \"passwd\"))
-@end example")
 
 ;;; create pipes for communication: RHS connection list for a process.
 ;;; the previous set of pipes gets recycled to the LHS.
@@ -615,22 +609,7 @@ Example:
 			 (next-right (cdr right-1)))))))))))
 
 (defmacro tail-call-pipeline args
-  `(tail-call-pipeline+
-    ,@(let next-arg ((rem args)
-		     (result (list)))
-	(cond ((null? rem)
-	       (reverse result))
-	      (else
-	       (next-arg (cdr rem)
-			 (let ((temp (cons `(tail-call-program
-					     ,@(car rem))
-					   result)))
-			   (if (null? (cdr rem))
-			       temp
-			       (cons '((1 0)) temp)))))))))
-
-(set-object-property! tail-call-pipeline 'documentation
-"Replace the current process image with a pipeline of connected processes.
+  "Replace the current process image with a pipeline of connected processes.
 
 The expressions in the pipeline are run in new background processes.
 The foreground process waits for them all to terminate.  The exit
@@ -645,7 +624,20 @@ close open ports or flush buffers.
 Example:
 @example
  (tail-call-pipeline (\"ls\" \"/etc\") (\"grep\" \"passwd\"))
-@end example")
+@end example"
+  `(tail-call-pipeline+
+    ,@(let next-arg ((rem args)
+		     (result (list)))
+	(cond ((null? rem)
+	       (reverse result))
+	      (else
+	       (next-arg (cdr rem)
+			 (let ((temp (cons `(tail-call-program
+					     ,@(car rem))
+					   result)))
+			   (if (null? (cdr rem))
+			       temp
+			       (cons '((1 0)) temp)))))))))
 
 ; try debugging a macro through a fork some day...
 ;(false-if-exception (delete-file "/tmp/goosh-debug"))
