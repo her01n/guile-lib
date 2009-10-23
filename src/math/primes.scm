@@ -103,7 +103,7 @@ being labelled prime) is @code{(expt 2 (- prime:trials))}."
 	 (or (null? lst) (and (= 1 (gcd n (car lst))) (mapf (cdr lst)))))))
 (define prime:prime-sqr 121)
 (define prime:products '(105))
-(define prime:sieve #y(0 0 1 1 0 1 0 1 0 0 0))
+(define prime:sieve #*00110101000)
 (letrec ((lp (lambda (comp comps primes nexp)
 	       (cond ((< comp (quotient most-positive-fixnum nexp))
 		      (let ((ncomp (* nexp comp)))
