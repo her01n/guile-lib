@@ -8,7 +8,8 @@ guile_library_TEXINFOS=fdl.texi
 www: html guile-library.pdf clean-www
 	find www -name 'index.scm' -print \
 	  | while read f; do \
-              guile -l "$$f" -c '(make-index)' \
+	      GUILE_AUTO_COMPILE=0 \
+              $(GUILE) -l "$$f" -c '(make-index)' \
 	        > `echo $$f | sed -e s,\.scm,\.html,`; \
 	    done
 	cp -a html www/doc/ref

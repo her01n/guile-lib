@@ -25,10 +25,11 @@ TESTS= \
 	texinfo.serialize.scm		\
 	text.parse-lalr.scm
 
-TESTS_ENVIRONMENT=\
-	API_FILE=$(srcdir)/guile-library.api \
-	DOC_GUILE_LIBRARY_SCM=$(top_srcdir)/doc/guile-library.scm \
-	$(top_srcdir)/dev-environ guile -s
+TESTS_ENVIRONMENT=							\
+	API_FILE=$(srcdir)/guile-library.api				\
+	DOC_GUILE_LIBRARY_SCM=$(top_srcdir)/doc/guile-library.scm	\
+	GUILE_AUTO_COMPILE=0						\
+	$(top_srcdir)/dev-environ $(GUILE) -s
 
 script := '(load (getenv "DOC_GUILE_LIBRARY_SCM"))\
 (for-each \
