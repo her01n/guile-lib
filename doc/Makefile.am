@@ -23,4 +23,4 @@ clean-www:
 	rm -rf www/doc/ref
 	rm -f www/doc/guile-library.pdf
 
-clean: clean-docs clean-www
+clean-local: clean-docs clean-www
