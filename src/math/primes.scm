@@ -112,7 +112,7 @@ being labelled prime) is @code{(expt 2 (- prime:trials))}."
 			    (next-prime nexp (cons ncomp comps)))))
 		     ((< (quotient comp nexp) (* nexp nexp))
 		      (set! prime:prime-sqr (* nexp nexp))
-		      (set! prime:sieve (make-uniform-vector nexp #\nul 0))
+		      (set! prime:sieve (make-bitvector nexp #f))
 		      (for-each (lambda (prime)
 				  (uniform-vector-set! prime:sieve prime 1))
 				primes)
