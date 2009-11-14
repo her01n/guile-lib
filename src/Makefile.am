@@ -2,6 +2,7 @@ moddir=$(prefix)/share/guile/site
 
 SOURCES = \
 	apicheck.scm			\
+	compat/guile-2.scm		\
 	config/load.scm			\
 	container/delay-tree.scm	\
 	container/nodal-tree.scm	\
