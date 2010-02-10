@@ -121,8 +121,7 @@ thing.
                     (error "Too many positional arguments."))
                 ((@ (ice-9 optargs) let-optional) ,positional
                   ,CANONICAL-BINDINGS
-                  #;
-                  ,@(map car CANONICAL-BINDINGS)
+                  ;; ,@(map car CANONICAL-BINDINGS)
                   ((@ (ice-9 optargs) let-keywords) ,keyword
                     #f
                     ,(map list VARIABLES VARIABLES)
