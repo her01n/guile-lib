@@ -1,5 +1,5 @@
 ;; (texinfo reflection) -- documenting Scheme as stexinfo
-;; Copyright (C) 2003,2004  Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2003,2004,2010  Andy Wingo <wingo at pobox dot com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -121,14 +121,6 @@
                         '()))))))
    (else
     (process-args (and=> (procedure-source proc) cadr)))))
-
-;; like the normal false-if-exception, but doesn't affect the-last-stack
-(define-macro (false-if-exception exp)
-  `(catch #t
-          (lambda ()
-            (with-fluids ((the-last-stack (fluid-ref the-last-stack)))
-              ,exp))
-          (lambda args #f)))
 
 ;; This is really nasty, I wish guile gave a better way to get this...
 (define (get-macro-args macro)
