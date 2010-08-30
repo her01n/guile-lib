@@ -189,7 +189,7 @@
    (typed-exports
      (binary-search-sorted-vector
        procedure
-       (arity 2 0 #t))
+       (arity 2 2 #f))
      (breadth-first-search procedure (arity 3 0 #f))
      (depth-first-search procedure (arity 3 0 #f))))
   ((statprof)
@@ -228,7 +228,7 @@
      (statprof-proc-call-data
        procedure
        (arity 1 0 #f))
-     (statprof-reset procedure (arity 4 0 #f))
+     (statprof-reset procedure (arity 3 0 #t))
      (statprof-sample-count procedure (arity 0 0 #f))
      (statprof-start procedure (arity 0 0 #f))
      (statprof-stats-%-time-in-proc
@@ -269,15 +269,15 @@
   ((string transform)
    (uses-interfaces)
    (typed-exports
-     (center-string procedure (arity 1 0 #t))
+     (center-string procedure (arity 1 3 #f))
      (collapse-repeated-chars
        procedure
-       (arity 1 0 #t))
+       (arity 1 2 #f))
      (escape-special-chars procedure (arity 3 0 #f))
-     (expand-tabs procedure (arity 1 0 #t))
-     (left-justify-string procedure (arity 1 0 #t))
-     (right-justify-string procedure (arity 1 0 #t))
-     (transform-string procedure (arity 3 0 #t))))
+     (expand-tabs procedure (arity 1 1 #f))
+     (left-justify-string procedure (arity 1 2 #f))
+     (right-justify-string procedure (arity 1 2 #f))
+     (transform-string procedure (arity 3 2 #f))))
   ((string wrap)
    (uses-interfaces)
    (typed-exports
@@ -308,9 +308,9 @@
    (uses-interfaces)
    (typed-exports
      (sxml->string procedure (arity 1 0 #f))
-     (sxml->xml procedure (arity 1 0 #t))
+     (sxml->xml procedure (arity 1 1 #f))
      (universal-sxslt-rules <pair>)
-     (xml->sxml procedure (arity 0 0 #t))))
+     (xml->sxml procedure (arity 0 1 #f))))
   ((sxml ssax)
    (uses-interfaces)
    (typed-exports
@@ -349,14 +349,14 @@
   ((sxml ssax input-parse)
    (uses-interfaces)
    (typed-exports
-     (assert-curr-char procedure (arity 2 0 #t))
-     (next-token procedure (arity 2 0 #t))
-     (next-token-of procedure (arity 1 0 #t))
-     (peek-next-char procedure (arity 0 0 #t))
-     (read-string procedure (arity 1 0 #t))
-     (read-text-line procedure (arity 0 0 #t))
-     (skip-until procedure (arity 1 0 #t))
-     (skip-while procedure (arity 1 0 #t))))
+     (assert-curr-char procedure (arity 2 1 #f))
+     (next-token procedure (arity 2 2 #f))
+     (next-token-of procedure (arity 1 1 #f))
+     (peek-next-char procedure (arity 0 1 #f))
+     (read-string procedure (arity 1 1 #f))
+     (read-text-line procedure (arity 0 1 #f))
+     (skip-until procedure (arity 1 1 #f))
+     (skip-while procedure (arity 1 1 #f))))
   ((sxml transform)
    (uses-interfaces)
    (typed-exports
