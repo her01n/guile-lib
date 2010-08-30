@@ -27,5 +27,6 @@ doc/Makefile
 examples/Makefile
 unit-tests/Makefile
 ])
+AC_CONFIG_FILES([dev-environ], [chmod +x dev-environ])
 
 AC_OUTPUT

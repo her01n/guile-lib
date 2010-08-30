@@ -17,10 +17,10 @@ $(doc)scmfiles:
 depfiles=$(addprefix $(top_srcdir)/src/,$(shell test ! -f $(doc)scmfiles || cat $(doc)scmfiles))
 
 $(doc).texi: $(srcdir)/$(doc).scm $(doc)scmfiles $(depfiles)
-	$(top_srcdir)/dev-environ $(srcdir)/make-texinfo.scm $(srcdir)/$(doc).scm >$@
+	$(top_builddir)/dev-environ $(srcdir)/make-texinfo.scm $(srcdir)/$(doc).scm >$@
 
 html-local: html-stamp $(srcdir)/$(doc).scm $(depfiles)
 html-stamp: $(scm-module-files)
-	$(top_srcdir)/dev-environ $(srcdir)/make-html.scm $(srcdir)/$(doc).scm
+	$(top_builddir)/dev-environ $(srcdir)/make-html.scm $(srcdir)/$(doc).scm
 	touch $@
 

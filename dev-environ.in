@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if test -z "$GUILE_LOAD_PATH"; then
+  export GUILE_LOAD_PATH="@abs_top_srcdir@/src"
+else
+  export GUILE_LOAD_PATH="@abs_top_srcdir@/src":$GUILE_LOAD_PATH
+fi
+# really should be the builddir...
+if test -z "$GUILE_LOAD_COMPILED_PATH"; then
+  export GUILE_LOAD_COMPILED_PATH="@abs_top_builddir@/src"
+else
+  export GUILE_LOAD_COMPILED_PATH="@abs_top_builddir@/src":$GUILE_LOAD_COMPILED_PATH
+fi
+
+exec "$@"
+

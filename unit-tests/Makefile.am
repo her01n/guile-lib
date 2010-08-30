@@ -29,7 +29,7 @@ TESTS_ENVIRONMENT=							\
 	API_FILE=$(srcdir)/guile-library.api				\
 	DOC_GUILE_LIBRARY_SCM=$(top_srcdir)/doc/guile-library.scm	\
 	GUILE_AUTO_COMPILE=0						\
-	$(top_srcdir)/dev-environ $(GUILE) -s
+	$(top_builddir)/dev-environ $(GUILE) -s
 
 script := '(load (getenv "DOC_GUILE_LIBRARY_SCM"))\
 (for-each \
@@ -38,7 +38,7 @@ script := '(load (getenv "DOC_GUILE_LIBRARY_SCM"))\
  *modules*)'
 
 guile-library.api.update:
-	$(top_srcdir)/dev-environ $(srcdir)/update-api \
+	$(top_builddir)/dev-environ $(srcdir)/update-api \
 	$(shell DOC_GUILE_LIBRARY_SCM=$(top_srcdir)/doc/guile-library.scm \
 	   guile -c $(script)) > $(srcdir)/guile-library.api
 
