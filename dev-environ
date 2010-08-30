@@ -4,9 +4,17 @@
 
 this_dir=$(cd $(dirname $0) && pwd)
 
-export GUILE_LOAD_PATH=$this_dir/src:$GUILE_LOAD_PATH
+if test -z "$GUILE_LOAD_PATH"; then
+  export GUILE_LOAD_PATH=$this_dir/src
+else
+  export GUILE_LOAD_PATH=$this_dir/src:$GUILE_LOAD_PATH
+fi
 # really should be the builddir...
-export GUILE_LOAD_COMPILED_PATH=$this_dir/src:$GUILE_LOAD_COMPILED_PATH
+if test -z "$GUILE_LOAD_COMPILED_PATH"; then
+  export GUILE_LOAD_COMPILED_PATH=$this_dir/src
+else
+  export GUILE_LOAD_COMPILED_PATH=$this_dir/src:$GUILE_LOAD_COMPILED_PATH
+fi
 
 exec "$@"
 
