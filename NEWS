@@ -2,6 +2,52 @@
 Guile-Lib NEWS
 
 
+guile-lib 0.1.7 -- 2010-08-29
+=============================
+
+* Updates for Guile 2.0.
+
+Guile 2.0 has incorporated many modules from Guile-Lib, but all the same
+we have to make sure that one Guile-Lib installation works fine with 1.8
+and 2.0. To that end 
+
+* The default SSAX parser no longer drops whitespace.
+
+We used to drop extraneous whitespace when using the default XML parser,
+but strictly speaking, this loses information. Guile-Lib now preserves
+whitespace in the resulting SXML.
+
+* SSAX supports UTF-8 output on Guile 1.8.
+
+Guile 1.8 naively treats characters as bytes, not understanding
+unicode. Still sometimes it's useful to emit UTF-8 sequences in Guile
+1.8, which is what this SSAX does. Note that Guile 2.0 includes its own
+SSAX, and handles unicode natively.
+
+* Expose ssax:predefined-parsed-entities
+
+Allows the user to define &foo; XML entities.
+
+* License changed to GPL and LGPL, version 3 or later.
+
+See the specific modules for their licenses.
+
+* Removed modules: (math rationalize), (scheme session), SRFIs 34,35,40
+
+Guile 1.8 and above support rationalize natively. The improvements in
+(scheme session) are in Guile now, as are SRFIs 34 and 35. SRFI 40 is
+withdrawn, in favor of SRFI 41.
+
+* Removed module (container queue)
+
+Use (ice-9 q) instead.
+
+* Call tree analysis in statprof
+
+Statprof can save away the various call trees that it samples for later
+analysis. See the statprof documentation, for more information.
+
+
 guile-lib 0.1.6 -- 2007-09-24
 =============================
 
