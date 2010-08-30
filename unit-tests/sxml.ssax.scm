@@ -59,7 +59,6 @@
         ssax:S-chars
         ssax:skip-S
         ssax:ncname-starting-char?
-        when
         make-xml-token
         nl
         ;unesc-string
@@ -69,9 +68,12 @@
         char-newline
         char-return
         char-tab
-        name-compare
-        let*-values
-        run-test)
+        name-compare)
+
+;; I have no idea.
+(cond-expand
+ (guile-2 (import (sxml ssax) when let*-values run-test))
+ (else (begin)))
 
 (define pp pretty-print)
 
