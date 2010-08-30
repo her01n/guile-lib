@@ -1,5 +1,5 @@
 ;; guile-lib
-;; Copyright (C) 2004 Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2004, 2010 Andy Wingo <wingo at pobox dot com>
 ;; Copyright (C) 2001,2002,2003,2004 Oleg Kiselyov <oleg at pobox dot com>
 
 ;; This program is free software; you can redistribute it and/or    
@@ -59,7 +59,7 @@
         ssax:S-chars
         ssax:skip-S
         ssax:ncname-starting-char?
-        ;when
+        when
         make-xml-token
         nl
         ;unesc-string
@@ -69,7 +69,9 @@
         char-newline
         char-return
         char-tab
-        name-compare)
+        name-compare
+        let*-values
+        run-test)
 
 (define pp pretty-print)
 
