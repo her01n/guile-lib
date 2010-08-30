@@ -65,8 +65,9 @@
       (hashq-set! *cache* regex re)
       re))))
 
-(define-syntax match-bind
-  (lambda (x)
+(cond-expand
+ (guile-2
+  (define-syntax match-bind
     "Match a string against a regular expression, binding lexical
 variables to the various parts of the match.
 
@@ -95,45 +96,88 @@ Here is a short example:
 expansion time. For this reason, @var{regex} must be a string literal,
 not an arbitrary expression.
 "
-    (define (match-bindings m re vars nvars)
-      (let lp ((in vars) (i 0) (out '()))
-        (syntax-case in ()
-          (()
-           (if (not (= i nvars))
-               (error "bad number of bindings to match-bind" i nvars)
-               (reverse out)))
-          ((v . v*)
-           (lp #'v* (1+ i)
-               (with-syntax ((i i) (m m))
-                 (cons #'(v ((@@ (match-bind) match-substring) m i)) out))))
-          (v (and (identifier? #'v) (<= i nvars))
-             (reverse
-              (cons (with-syntax
-                        (((init ...)
-                          (map (lambda (x)
-                                 (with-syntax ((m m) (i (+ i x)))
-                                   #'((@@ (match-bind) match-substring) m i)))
-                               (iota (- nvars i)))))
-                      #'(v (list init ...)))
-                    out))))))
-    (syntax-case x ()
-      ((_ regex str vars consequent)
-       #'(match-bind regex str vars consequent (if #f #f)))
-      ((_ regex str vars consequent alternate)
-       (let ((m #'m))
-         (with-syntax ((m m)
-                       (((var val) ...)
-                        (match-bindings m (memoize-re (syntax->datum #'regex))
-                                        #'vars
-                                        ;; 1+ for the match:0 binding
-                                        (1+ (regex:count
-                                             (syntax->datum #'regex))))))
-           #'(let* ((m (regexp-exec ((@@ (match-bind) memoize-re) regex)
-                                    str)))
-               (if m
-                   (let ((var val) ...)
-                     consequent)
-                   alternate))))))))
+    (lambda (x)
+      (define (match-bindings m re vars nvars)
+        (let lp ((in vars) (i 0) (out '()))
+          (syntax-case in ()
+            (()
+             (if (not (= i nvars))
+                 (error "bad number of bindings to match-bind" i nvars)
+                 (reverse out)))
+            ((v . v*)
+             (lp #'v* (1+ i)
+                 (with-syntax ((i i) (m m))
+                   (cons #'(v ((@@ (match-bind) match-substring) m i)) out))))
+            (v (and (identifier? #'v) (<= i nvars))
+               (reverse
+                (cons (with-syntax
+                          (((init ...)
+                            (map (lambda (x)
+                                   (with-syntax ((m m) (i (+ i x)))
+                                     #'((@@ (match-bind) match-substring) m i)))
+                                 (iota (- nvars i)))))
+                        #'(v (list init ...)))
+                      out))))))
+      (syntax-case x ()
+        ((_ regex str vars consequent)
+         #'(match-bind regex str vars consequent (if #f #f)))
+        ((_ regex str vars consequent alternate)
+         (let ((m #'m))
+           (with-syntax ((m m)
+                         (((var val) ...)
+                          (match-bindings m (memoize-re (syntax->datum #'regex))
+                                          #'vars
+                                          ;; 1+ for the match:0 binding
+                                          (1+ (regex:count
+                                               (syntax->datum #'regex))))))
+             #'(let* ((m (regexp-exec ((@@ (match-bind) memoize-re) regex)
+                                      str)))
+                 (if m
+                     (let ((var val) ...)
+                       consequent)
+                     alternate)))))))))
+ (else
+  (define-syntax match-bind
+    (lambda (x)
+      (define (match-bindings m re vars nvars)
+        (let lp ((in vars) (i 0) (out '()))
+          (syntax-case in ()
+            (()
+             (if (not (= i nvars))
+                 (error "bad number of bindings to match-bind" i nvars)
+                 (reverse out)))
+            ((v . v*)
+             (lp #'v* (1+ i)
+                 (with-syntax ((i i) (m m))
+                   (cons #'(v ((@@ (match-bind) match-substring) m i)) out))))
+            (v (and (identifier? #'v) (<= i nvars))
+               (reverse
+                (cons (with-syntax
+                          (((init ...)
+                            (map (lambda (x)
+                                   (with-syntax ((m m) (i (+ i x)))
+                                     #'((@@ (match-bind) match-substring) m i)))
+                                 (iota (- nvars i)))))
+                        #'(v (list init ...)))
+                      out))))))
+      (syntax-case x ()
+        ((_ regex str vars consequent)
+         #'(match-bind regex str vars consequent (if #f #f)))
+        ((_ regex str vars consequent alternate)
+         (let ((m #'m))
+           (with-syntax ((m m)
+                         (((var val) ...)
+                          (match-bindings m (memoize-re (syntax->datum #'regex))
+                                          #'vars
+                                          ;; 1+ for the match:0 binding
+                                          (1+ (regex:count
+                                               (syntax->datum #'regex))))))
+             #'(let* ((m (regexp-exec ((@@ (match-bind) memoize-re) regex)
+                                      str)))
+                 (if m
+                     (let ((var val) ...)
+                       consequent)
+                     alternate))))))))))
 
 (define-macro (make-state-parser states initial)
   `(lambda (port)
