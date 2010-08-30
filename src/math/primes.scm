@@ -1,5 +1,5 @@
 ;; (math primes) -- factorization, prime test, and generation
-;; Copyright (C) 1991, 1992, 1993, 1998  Aubrey Jaffer
+;; Copyright (C) 1991, 1992, 1993, 1998, 2010  Aubrey Jaffer
 
 ;; Permission to copy this software, to modify it, to redistribute it,
 ;; to distribute modified versions, and to use it for any purpose is
@@ -17,16 +17,16 @@
 ;; promotional, or sales literature without prior written consent in
 ;; each case.
 
-#!
 ;;; Commentary:
-@cindex prime number
-@cindex numbers, prime
-@cindex numbers, prime factors of
-@cindex prime factors
-@cindex factors, prime
-This module defines functions related to prime numbers, and prime factorization.
+;;
+;; @cindex prime number
+;; @cindex numbers, prime
+;; @cindex numbers, prime factors of
+;; @cindex prime factors
+;; @cindex factors, prime
+;; This module defines functions related to prime numbers, and prime factorization.
+;;
 ;;; Code:
-!#
 
 (define-module (math primes)
   #:use-module (scheme documentation)
@@ -114,7 +114,7 @@ being labelled prime) is @code{(expt 2 (- prime:trials))}."
 		      (set! prime:prime-sqr (* nexp nexp))
 		      (set! prime:sieve (make-bitvector nexp #f))
 		      (for-each (lambda (prime)
-				  (uniform-vector-set! prime:sieve prime 1))
+				  (bitvector-set! prime:sieve prime #t))
 				primes)
 		      (set! prime:products (reverse (cons comp comps))))
 		     (else
@@ -132,7 +132,7 @@ being labelled prime) is @code{(expt 2 (- prime:trials))}."
 There is a slight chance, @code{(expt 2 (- prime:trials))}, that a 
 composite will return @code{#t}."
   (set! n (abs n))
-  (cond ((< n (uniform-vector-length prime:sieve)) (positive? (uniform-vector-ref prime:sieve n)))
+  (cond ((< n (bitvector-length prime:sieve)) (bitvector-ref prime:sieve n))
 	((even? n) #f)
 	((primes-gcd? n prime:products) #f)
 	((< n prime:prime-sqr) #t)
