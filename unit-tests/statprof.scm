@@ -1,5 +1,5 @@
 ;; guile-lib
-;; Copyright (C) 2004 Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2004, 2010 Andy Wingo <wingo at pobox dot com>
 ;; Copyright (C) 2001 Rob Browning <rlb at defaultvalue dot org>
 
 ;; This library is free software; you can redistribute it and/or
@@ -92,38 +92,41 @@
              "  call-frequencies: within tolerance ~A<~A%\n"
              (* 100 drift-fraction) (* 100 max-allowed-drift)))))))
 
-(define-method (test-call-counts (self <test-statprof>))
-  ;; Test to see that if we call a function N times while the profiler
-  ;; is active, it shows up N times.
-  (debug-set! stack 0)
-  (let ((num-calls 2000))
+(cond-expand
+ (guile-2 (begin))
+ (else
+  (define-method (test-call-counts (self <test-statprof>))
+    ;; Test to see that if we call a function N times while the profiler
+    ;; is active, it shows up N times.
+    (debug-set! stack 0)
+    (let ((num-calls 2000))
 
-    (define (do-nothing n)
-      (simple-format #f "FOO ~A\n" (+ n n)))
+      (define (do-nothing n)
+        (simple-format #f "FOO ~A\n" (+ n n)))
     
-    ;; Run test.
-    (statprof-reset 0 50000 #t #f)
-    (statprof-start)
-    (let loop ((x num-calls))
-      (cond
-       ((positive? x)
-        (do-nothing x)
-        (loop (- x 1))
-        #t)))
-    (statprof-stop)
+      ;; Run test.
+      (statprof-reset 0 50000 #t #f)
+      (statprof-start)
+      (let loop ((x num-calls))
+        (cond
+         ((positive? x)
+          (do-nothing x)
+          (loop (- x 1))
+          #t)))
+      (statprof-stop)
     
-    ;;(statprof-display)
+      ;;(statprof-display)
 
-    ;; Check result.
-    (let ((proc-data (statprof-proc-call-data do-nothing)))
-      (if (and proc-data
-               (= (statprof-call-data-calls proc-data)
-                  num-calls))
-          'ok
-          (fail "Expected ~A calls, got ~A.\n"
-                num-calls
-                (and proc-data
-                     (statprof-call-data-calls proc-data)))))))
+      ;; Check result.
+      (let ((proc-data (statprof-proc-call-data do-nothing)))
+        (if (and proc-data
+                 (= (statprof-call-data-calls proc-data)
+                    num-calls))
+            'ok
+            (fail "Expected ~A calls, got ~A.\n"
+                  num-calls
+                  (and proc-data
+                       (statprof-call-data-calls proc-data)))))))))
 
 (exit-with-summary (run-all-defined-test-cases))
 
