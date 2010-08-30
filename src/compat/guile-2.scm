@@ -1,5 +1,5 @@
 ;; (compat guile-2) -- guile 2.0 interface for older guiles
-;; Copyright (C) 2009 Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2009, 2010 Andy Wingo <wingo at pobox dot com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,4 +30,16 @@
  (else
   (use-modules (ice-9 syncase))
   (module-use! (module-public-interface (current-module))
-               (resolve-interface '(ice-9 syncase)))))
+               (resolve-interface '(ice-9 syncase)))
+  (define-public guile-2 syncase)
+
+  (export eval-when)
+  (define-macro (eval-when conditions . body)
+    (if (or (memq 'eval conditions)
+            (memq 'load conditions)
+            (memq 'expand conditions))
+        `(begin . ,body)
+        '(begin)))
+
+  (read-hash-extend #\' (lambda (chr port)
+                          (list 'syntax (read port))))))

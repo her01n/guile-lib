@@ -1,5 +1,5 @@
 ;; (os process): process chains
-;; Copyright (C) 1997, 2000, 2001  Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2000, 2001, 2010  Free Software Foundation, Inc.
 ;; Written by Gary Houston <ghouston@arglist.com>, originally as "goosh.scm".
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,8 @@ of macros that use them.  They should be ignored by users of this module.
 ;;; Code:
 !#
 
-(define-module (os process))
+(define-module (os process)
+  #:use-module (compat guile-2))
 
 (export tail-call-program run run-concurrently run-with-pipe)
 (export-syntax run-concurrently+ run+ tail-call-pipeline+

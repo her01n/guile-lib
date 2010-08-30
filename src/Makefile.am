@@ -10,7 +10,6 @@ SOURCES = \
 	debugging/assert.scm		\
 	debugging/time.scm		\
 	graph/topological-sort.scm	\
-	guile-lib/compat-2.0.scm	\
 	htmlprag.scm			\
 	io/string.scm			\
 	logging/logger.scm		\

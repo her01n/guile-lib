@@ -1,5 +1,5 @@
 ;; (texinfo serialize) -- rendering stexinfo as texinfo
-;; Copyright (C) 2003,2004  Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2003,2004,2010  Andy Wingo <wingo at pobox dot com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
   #:use-module (string wrap)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
+  #:use-module (compat guile-2)
   #:export (stexi->texi))
 
 (define (list-intersperse src-l elem)
