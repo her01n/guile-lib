@@ -68,7 +68,8 @@
 (cond-expand
  (guile-2
   (define-syntax match-bind
-    "Match a string against a regular expression, binding lexical
+    (lambda (x)
+      "Match a string against a regular expression, binding lexical
 variables to the various parts of the match.
 
 @var{vars} is a list of names to which to bind the parts of the match.
@@ -96,8 +97,7 @@ Here is a short example:
 expansion time. For this reason, @var{regex} must be a string literal,
 not an arbitrary expression.
 "
-    (lambda (x)
-      (define (match-bindings m re vars nvars)
+    (define (match-bindings m re vars nvars)
         (let lp ((in vars) (i 0) (out '()))
           (syntax-case in ()
             (()
