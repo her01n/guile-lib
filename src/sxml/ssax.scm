@@ -147,16 +147,18 @@
   #:export-syntax (ssax:make-parser ssax:make-pi-parser ssax:make-elem-parser))
 
 ;; #:use-syntax doesn't work, see boot-9.scm:1761
-(use-syntax (ice-9 syncase))
-
-;; fuck syncase!!
-(let ((mod (current-module)))
-  (set-module-binder!
-   (module-public-interface mod)
-   (lambda (interface sym define?)
-     (let ((var (module-local-variable mod sym)))
-       (if var (module-add! interface sym var))
-       var))))
+(cond-expand
+ (guile-2 (begin))
+ (else
+  (use-syntax (ice-9 syncase))
+  ;; hack around lack of hygiene regarding modules in guile 1.8
+  (let ((mod (current-module)))
+    (set-module-binder!
+     (module-public-interface mod)
+     (lambda (interface sym define?)
+       (let ((var (module-local-variable mod sym)))
+         (if var (module-add! interface sym var))
+         var))))))
 
 (define (parser-error port message . rest)
   (apply throw 'parser-error port message rest))
