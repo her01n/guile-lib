@@ -22,7 +22,7 @@
 
 (define-class <test-api> (<test-case>))
 
-(load (getenv "DOC_GUILE_LIBRARY_SCM"))
+(primitive-load (getenv "DOC_GUILE_LIBRARY_SCM"))
 
 (define-method (test-api (self <test-api>))
   (apicheck-validate

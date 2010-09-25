@@ -23,7 +23,7 @@ exec guile --debug -s $0 "$@"
              (texinfo serialize))
 
 (define (main config-scm)
-  (load config-scm)
+  (primitive-load config-scm)
   (display
    (stexi->texi
     (package-stexi-documentation
