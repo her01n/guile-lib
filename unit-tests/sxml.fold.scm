@@ -26,7 +26,8 @@
 
 (use-modules (oop goops)
              (unit-test)
-             (sxml fold))
+             (sxml fold)
+             ((srfi srfi-1) #:select (fold)))
 
 (define-macro (@@ mod var)
   `(module-ref (resolve-module ',mod) ',var))

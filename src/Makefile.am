@@ -1,5 +1,52 @@
 moddir=$(prefix)/share/guile/site
 
+SXML_FILES =					\
+	sxml/apply-templates.scm		\
+	sxml/fold.scm				\
+	sxml/simple.scm				\
+	sxml/ssax/input-parse.scm		\
+	sxml/ssax.scm				\
+	sxml/transform.scm			\
+	sxml/unicode.scm			\
+	sxml/upstream/SSAX-expanded.scm		\
+	sxml/upstream/SSAX.scm			\
+	sxml/upstream/SXML-tree-trans.scm	\
+	sxml/upstream/SXPath-old.scm		\
+	sxml/upstream/input-parse.scm		\
+	sxml/upstream/assert.scm		\
+	sxml/xpath.scm				\
+	sxml/ssax-simple.scm
+
+TEXINFO_FILES =					\
+	texinfo/docbook.scm			\
+	texinfo/html.scm			\
+	texinfo/indexing.scm			\
+	texinfo/nodal-tree.scm			\
+	texinfo/plain-text.scm			\
+	texinfo/reflection.scm			\
+	texinfo/serialize.scm			\
+	texinfo.scm
+
+if HAVE_GUILE_COMPILE
+
+# Here we assume we are using Guile 2.0, and Guile 2.0 already comes
+# with the `(sxml ...)' and `(texinfo ...)' modules unmodified.
+
+SXML_SOURCES =
+TEXINFO_SOURCES =
+
+EXTRA_DIST = $(SXML_FILES) $(TEXINFO_FILES)
+
+else !HAVE_GUILE_COMPILE
+
+SXML_SOURCES = $(SXML_FILES)
+TEXINFO_SOURCES = $(TEXINFO_FILES)
+
+EXTRA_DIST =
+
+endif !HAVE_GUILE_COMPILE
+
+
 SOURCES = \
 	apicheck.scm			\
 	compat/guile-2.scm		\
@@ -28,30 +75,9 @@ SOURCES = \
 	string/soundex.scm		\
 	string/transform.scm		\
 	string/wrap.scm			\
-	sxml/apply-templates.scm	\
-	sxml/fold.scm			\
-	sxml/simple.scm			\
-	sxml/ssax/input-parse.scm	\
-	sxml/ssax.scm			\
-	sxml/transform.scm		\
-	sxml/unicode.scm		\
-	sxml/upstream/SSAX-expanded.scm	\
-	sxml/upstream/SSAX.scm		\
-	sxml/upstream/SXML-tree-trans.scm \
-	sxml/upstream/SXPath-old.scm	\
-	sxml/upstream/input-parse.scm	\
-	sxml/upstream/assert.scm	\
-	sxml/xpath.scm			\
-	sxml/ssax-simple.scm		\
+        $(SXML_SOURCES)			\
 	term/ansi-color.scm		\
-	texinfo/docbook.scm		\
-	texinfo/html.scm		\
-	texinfo/indexing.scm		\
-	texinfo/nodal-tree.scm		\
-	texinfo/plain-text.scm		\
-	texinfo/reflection.scm		\
-	texinfo/serialize.scm		\
-	texinfo.scm			\
+	$(TEXINFO_SOURCES)		\
 	text/parse-lalr.scm		\
 	unit-test.scm
 
@@ -62,7 +88,7 @@ GOBJECTS =
 endif
 
 nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES) $(GOBJECTS)
-EXTRA_DIST = $(SOURCES) $(NOCOMP_SOURCES)
+EXTRA_DIST += $(SOURCES) $(NOCOMP_SOURCES)
 
 CLEANFILES = $(GOBJECTS)
 
