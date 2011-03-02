@@ -9,7 +9,7 @@ AC_SUBST(ACLOCAL_FLAGS,$ACLOCAL_FLAGS)
 GUILE_PROGS
 GUILE_FLAGS
 
-if $GUILE_TOOLS | grep -q compile; then
+if $GUILE_TOOLS | grep compile 2>&1 >/dev/null; then
    GUILE_COMPILE="$GUILE_TOOLS compile"
    HAVE_GUILE_COMPILE=1
 else
