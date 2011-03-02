@@ -2,7 +2,7 @@ dnl -*- Autoconf -*-
 
 AC_INIT(guile-lib, 0.1.9)
 AC_CONFIG_SRCDIR(src/md5.scm)
-AM_INIT_AUTOMAKE([gnu check-news color-tests -Wall -Wno-portability])
+AM_INIT_AUTOMAKE([1.11 gnu check-news color-tests -Wall -Wno-portability])
 
 AC_SUBST(ACLOCAL_FLAGS,$ACLOCAL_FLAGS)
 
