@@ -31,8 +31,10 @@
 
 (define-class <test-statprof> (<test-case>))
 
-(debug-enable 'debug)
-(trap-enable 'traps)
+(cond-expand (guile-2 #t)
+             (guile   (begin
+                        (debug-enable 'debug)
+                        (trap-enable 'traps))))
 
 (define (fail reason . args)
   (throw 'test-failed-exception
