@@ -27,6 +27,9 @@ TEXINFO_FILES =					\
 	texinfo/serialize.scm			\
 	texinfo.scm
 
+STATPROF_FILES =				\
+	statprof.scm
+
 if HAVE_GUILE_COMPILE
 
 # Here we assume we are using Guile 2.0, and Guile 2.0 already comes
@@ -34,13 +37,15 @@ if HAVE_GUILE_COMPILE
 
 SXML_SOURCES =
 TEXINFO_SOURCES =
+STATPROF_SOURCES =
 
-EXTRA_DIST = $(SXML_FILES) $(TEXINFO_FILES)
+EXTRA_DIST = $(SXML_FILES) $(TEXINFO_FILES) $(STATPROF_SOURCES)
 
 else !HAVE_GUILE_COMPILE
 
 SXML_SOURCES = $(SXML_FILES)
 TEXINFO_SOURCES = $(TEXINFO_FILES)
+STATPROF_SOURCES = $(STATPROF_FILES)
 
 EXTRA_DIST =
 
@@ -70,7 +75,7 @@ SOURCES = \
 	scheme/documentation.scm	\
 	scheme/kwargs.scm		\
 	search/basic.scm		\
-	statprof.scm			\
+	$(STATPROF_SOURCES)		\
 	string/completion.scm		\
 	string/soundex.scm		\
 	string/transform.scm		\
