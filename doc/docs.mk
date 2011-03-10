@@ -11,16 +11,19 @@ EXTRA_DIST=$(doc).scm make-texinfo.scm make-html.scm docs.mk
 DISTCLEANFILES=$(doc).texi $(doc)scmfiles
 
 $(doc)scmfiles:
-	guile --debug --use-srfi=13 -l $(srcdir)/$(doc).scm \
+	GUILE_AUTO_COMPILE=0												  \
+	$(GUILE) --debug --use-srfi=13 -l $(srcdir)/$(doc).scm								  \
 	 -c '(for-each (lambda (m) (format #t "~a.scm\n" (string-join (map symbol->string m) "/"))) (map car *modules*))' \
 	 > $@
 depfiles=$(addprefix $(top_srcdir)/src/,$(shell test ! -f $(doc)scmfiles || cat $(doc)scmfiles))
 
 $(doc).texi: $(srcdir)/$(doc).scm $(doc)scmfiles $(depfiles)
+	GUILE_AUTO_COMPILE=0								\
 	$(top_builddir)/dev-environ $(srcdir)/make-texinfo.scm $(srcdir)/$(doc).scm >$@
 
 html-local: html-stamp $(srcdir)/$(doc).scm $(depfiles)
 html-stamp: $(scm-module-files)
+	GUILE_AUTO_COMPILE=0								\
 	$(top_builddir)/dev-environ $(srcdir)/make-html.scm $(srcdir)/$(doc).scm
 	touch $@
 
