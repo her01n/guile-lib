@@ -1,6 +1,6 @@
 ;;; ----------------------------------------------------------------------
 ;;;    unit test
-;;;    Copyright (C) 2007 Andy Wingo
+;;;    Copyright (C) 2007, 2011 Andy Wingo
 ;;;
 ;;;    This program is free software; you can redistribute it and/or modify
 ;;;    it under the terms of the GNU General Public License as published by
@@ -24,9 +24,16 @@
 
 (primitive-load (getenv "DOC_GUILE_LIBRARY_SCM"))
 
+(define (read-api)
+  (let ((api (call-with-input-file (getenv "API_FILE") read)))
+    (if (> (length api) 2)
+        (cons* (car api) (cadr api)
+               (filter (lambda (x)
+                         (not (assoc (car x) *system-modules*)))
+                       (cddr api)))
+        api)))
+
 (define-method (test-api (self <test-api>))
-  (apicheck-validate
-   (call-with-input-file (getenv "API_FILE") read)
-   (map car *modules*)))
+  (apicheck-validate (read-api) (map car *modules*)))
 
 (exit-with-summary (run-all-defined-test-cases))

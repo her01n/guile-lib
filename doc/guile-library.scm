@@ -46,6 +46,19 @@ License\".")
 (define *extra-html-entry-files*
   '())
 
+;; Modules that used to be a part of guile-lib, but which have been
+;; incorporated into Guile itself.
+(define *system-modules* '())
+
+;; A helper for modules that were incorporated into Guile 2.0.
+(define (guile-2-modules modules)
+  (cond-expand
+   (guile-2
+    (set! *system-modules* (append *system-modules* modules))
+    '())
+   (#t
+    modules)))
+
 ;; The modules to document
 (define *modules*
   `(((apicheck)
@@ -89,10 +102,9 @@ License\".")
      "Defining functions with flexible keyword arguments")
     ((search basic)
      "Classic search functions")
-    ,@(cond-expand (guile-2 '())
-                   (#t
-                    '(((statprof)
-                       "Statistical profiler"))))
+    ,@(guile-2-modules
+       '(((statprof)
+          "Statistical profiler")))
     ((string completion)
      "Building blocks for tab completion")
     ((string soundex)
@@ -101,46 +113,44 @@ License\".")
      "Beyond SRFI-13")
     ((string wrap)
      "A versatile string formatter")
-    ,@(cond-expand (guile-2 '())
-                   (#t
-                    '(((sxml apply-templates)
-                       "A more XSLT-like approach to SXML transformations")
-                      ((sxml fold)
-                       "Fold-based SXML transformation operators")
-                      ((sxml simple)
-                       "Convenient XML parsing and serializing")
-                      ((sxml ssax)
-                       "Functional-style XML parsing for Scheme")
-                      ((sxml ssax input-parse)
-                       "The SSAX tokenizer, optimized for Guile")
-                      ((sxml transform)
-                       "A higher-order SXML transformation operator, "
-                       (code "pre-post-order"))
-                      ((sxml xpath)
-                       "XPath for SXML"))))
+    ,@(guile-2-modules
+       '(((sxml apply-templates)
+          "A more XSLT-like approach to SXML transformations")
+         ((sxml fold)
+          "Fold-based SXML transformation operators")
+         ((sxml simple)
+          "Convenient XML parsing and serializing")
+         ((sxml ssax)
+          "Functional-style XML parsing for Scheme")
+         ((sxml ssax input-parse)
+          "The SSAX tokenizer, optimized for Guile")
+         ((sxml transform)
+          "A higher-order SXML transformation operator, "
+          (code "pre-post-order"))
+         ((sxml xpath)
+          "XPath for SXML")))
     ((term ansi-color)
      "Generate ANSI color escape sequences")
-    ,@(cond-expand (guile-2 '())
-                   (#t
-                    '(((texinfo)
-                       "Parse texinfo files or fragments into " (code "stexi") ", a "
-                       "scheme representation")
-                      ((texinfo docbook)
-                       "Transform a subset of docbook into " (code "stexi"))
-                      ((texinfo html)
-                       "Transform " (code "stexi") " into HTML")
-                      ((texinfo indexing)
-                       "Extract an index from a piece of " (code "stexi"))
-                      ((texinfo nodal-tree)
-                       "Chunk a " (code "stexi") " document into pieces")
-                      ((texinfo plain-text)
-                       "Render " (code "stexi") " as plain text")
-                      ((texinfo serialize)
-                       "Render " (code "stexi") " as texinfo")
-                      ((texinfo reflection)
-                       "Enable texinfo across Guile's help system")
-                      ((text parse-lalr)
-                       "A LALR(1) parser written in Scheme"))))
+    ,@(guile-2-modules
+       '(((texinfo)
+          "Parse texinfo files or fragments into " (code "stexi") ", a "
+          "scheme representation")
+         ((texinfo docbook)
+          "Transform a subset of docbook into " (code "stexi"))
+         ((texinfo html)
+          "Transform " (code "stexi") " into HTML")
+         ((texinfo indexing)
+          "Extract an index from a piece of " (code "stexi"))
+         ((texinfo nodal-tree)
+          "Chunk a " (code "stexi") " document into pieces")
+         ((texinfo plain-text)
+          "Render " (code "stexi") " as plain text")
+         ((texinfo serialize)
+          "Render " (code "stexi") " as texinfo")
+         ((texinfo reflection)
+          "Enable texinfo across Guile's help system")
+         ((text parse-lalr)
+          "A LALR(1) parser written in Scheme")))
     ((unit-test)
      "A JUnit-style unit testing framework")))
     ;; link to literate programming article
