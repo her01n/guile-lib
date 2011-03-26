@@ -23,14 +23,14 @@ User-visible changes only.
 
 9) Sign and upload tarball:
    gpg -b tarball
-   scp NEWS tarball tarball.sig download.gna.org:/upload/guile-lib/
+   scp NEWS tarball tarball.sig dl.sv.nongnu.org:/releases/guile-lib/
 
 10) Make a release note, which should be like this:
 
 I am pleased to announce that Guile-Lib N.M.O has been released. It
 may be obtained at:
 
-  http://download.gna.org/guile-lib/guile-lib-XXX.tar.gz
+  http://download.savannah.gnu.org/releases/guile-lib/guile-lib-0.2.0.tar.gz
 
 What is Guile-Lib
 -----------------

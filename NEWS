@@ -2,6 +2,21 @@
 Guile-Lib NEWS
 
 
+guile-lib 0.2.0 -- 2011-03-26
+=============================
+
+* Updates for Guile 2.0.
+
+When compiled against Guile 2.0, Guile-Lib no longer installs modules
+that have been included in the Guile distribution.  This is an
+incompatible change: if you build Guile-Lib against Guile 2.0 and then
+use it against 1.8, you will be missing `(sxml simple)' and the other
+modules that were incorporated in Guile 2.0.
+
+That said, Guile 2.0 is appoximately 7.1 times as awesome as Guile 1.8,
+so you should stop worrying and learn to love it.
+
+
 guile-lib 0.1.9 -- 2010-08-29
 =============================
 
@@ -9,7 +24,7 @@ guile-lib 0.1.9 -- 2010-08-29
 
 Guile 2.0 has incorporated many modules from Guile-Lib, but all the same
 we have to make sure that one Guile-Lib installation works fine with 1.8
-and 2.0. To that end 
+and 2.0.
 
 * The default SSAX parser no longer drops whitespace.
 
@@ -137,7 +152,7 @@ See the ChangeLog for details on changes to (texinfo serialize),
 (texinfo html), (texinfo), and (sxml simple).
 
 
-Copyright (C) 2007 Andy Wingo <wingo at pobox dot com>
+Copyright (C) 2007,2010,2011 Andy Wingo <wingo at pobox dot com>
 
 Copying and distribution of this file, with or without modification, are
 permitted in any medium without royalty provided the copyright notice
