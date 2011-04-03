@@ -56,7 +56,7 @@ License\".")
    (guile-2
     (set! *system-modules* (append *system-modules* modules))
     '())
-   (#t
+   (else
     modules)))
 
 ;; The modules to document
