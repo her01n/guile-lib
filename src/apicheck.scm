@@ -98,7 +98,11 @@
          (module-exports-sorted mod))))
 
 (define (procedure-arity proc)
-  (assq 'arity (procedure-properties proc)))
+  (cond-expand
+   (guile-2
+    (cons 'arity (procedure-minimum-arity proc)))
+   (else
+    (assq 'arity (procedure-properties proc)))))
 
 ;; deals with improper lists
 (define (map* proc l)
