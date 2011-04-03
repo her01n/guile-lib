@@ -2,6 +2,15 @@
 Guile-Lib NEWS
 
 
+guile-lib 0.2.1 -- 2011-04-03
+=============================
+
+* Updates for Guile 1.8.
+
+Some of the compatibility hacks from 0.2.0 broke Guile-Lib on Guile
+1.8.  Thanks to Andreas Rottmann for the various fixes.
+
+
 guile-lib 0.2.0 -- 2011-03-26
 =============================
 

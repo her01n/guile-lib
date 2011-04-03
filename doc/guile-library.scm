@@ -1,8 +1,8 @@
 ;; About the package
 (define *name* "Guile Library")
 (define *description* "Common modules for Guile Scheme")
-(define *version* "0.2.0")
-(define *updated* "26 March 2011")
+(define *version* "0.2.1")
+(define *updated* "3 April 2011")
 (define *authors*
   '(("Andy Wingo" . "wingo at pobox.com")
     ("Richard Todd" . "richardt at vzavenue.net")))
