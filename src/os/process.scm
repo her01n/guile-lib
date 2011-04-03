@@ -1,5 +1,5 @@
 ;; (os process): process chains
-;; Copyright (C) 1997, 2000, 2001, 2010  Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2000, 2001, 2010, 2011  Free Software Foundation, Inc.
 ;; Written by Gary Houston <ghouston@arglist.com>, originally as "goosh.scm".
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -94,6 +94,13 @@ of macros that use them.  They should be ignored by users of this module.
 
     (dup2 error-fdes 2)))
 
+(cond-expand
+ ((not guile-2)
+  (define (ensure-batch-mode!)
+    (set-batch-mode?! #t))
+  (export ensure-batch-mode!))
+ (else))
+
 (define (tail-call-program prog . args)
 "Replace the current process image by executing @var{prog} with the
 supplied list of arguments, @var{args}.
@@ -126,7 +133,7 @@ Examples:
   (lambda ()
     (tail-call-program \"cat\")))
 @end example"
-  (set-batch-mode?! #t)
+  (ensure-batch-mode!)
   (stdports->stdio)
   (apply execlp (cons prog (cons prog args))))
 
@@ -323,7 +330,7 @@ Example:
 	   (,ports (list)))
        (cond ((= ,pid 0)
 	      ;; child
-	      (set-batch-mode?! #t)
+	      (ensure-batch-mode!)
 	      ,@(os:process:pipe-make-redir-commands connections ports)
 	      ,proc
 	      (primitive-exit 1))
@@ -477,7 +484,7 @@ Example:
        ;; wait for all the processes to terminate and quit with the
        ;; exit status from the one at the tail of the pipe.
        ;; could save memory by exec'ing a tiny program to do the waiting.
-       (set-batch-mode?! #t)
+       (ensure-batch-mode!)
        (let next-pid ((waiting-for (length ,pids))
 		      (result 0))
 	 (cond ((> waiting-for 0)
