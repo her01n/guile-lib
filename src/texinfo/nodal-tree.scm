@@ -1,5 +1,5 @@
 ;; (texinfo nodal-tree) -- rendering stexinfo to a nodal tree
-;; Copyright (C) 2003,2004  Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2003,2004,2011  Andy Wingo <wingo at pobox dot com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -83,15 +83,15 @@ section.
            (node (make-node* #f (cadr stexi)))
            (parent #f)
            (depth initial-depth))
-    ;(pk (or (null? in) (car in)) val node parent depth)
+    ;; (pk (or (null? in) (car in)) val node parent depth)
     (cond
      ((null? in)
-      (node-set! node 'value (reverse! val))
+      (node-set! node 'value (reverse val))
       (find-parent node))
      ((or (chunking-section? (car in) max-depth)
           (and (node? (car in)) (pair? in) (pair? (cdr in))
                (chunking-section? (cadr in) max-depth)))
-      (node-set! node 'value (reverse! val))
+      (node-set! node 'value (reverse val))
       (let* ((node-statement (if (node? (car in)) (car in) #f))
              (in (if node-statement (cdr in) in))
              (new-depth (texi-command-depth (caar in) max-depth)))

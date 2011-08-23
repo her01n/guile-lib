@@ -17,11 +17,12 @@ SXML_FILES =					\
 	sxml/xpath.scm				\
 	sxml/ssax-simple.scm
 
+# Note, texinfo/nodal-tree.scm is not in guile 2.0, so it is in SOURCES
+# below.
 TEXINFO_FILES =					\
 	texinfo/docbook.scm			\
 	texinfo/html.scm			\
 	texinfo/indexing.scm			\
-	texinfo/nodal-tree.scm			\
 	texinfo/plain-text.scm			\
 	texinfo/reflection.scm			\
 	texinfo/serialize.scm			\
@@ -83,6 +84,7 @@ SOURCES = \
         $(SXML_SOURCES)			\
 	term/ansi-color.scm		\
 	$(TEXINFO_SOURCES)		\
+	texinfo/nodal-tree.scm		\
 	text/parse-lalr.scm		\
 	unit-test.scm
 
