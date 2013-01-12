@@ -26,8 +26,18 @@
                #:init-value "The quick brown fox.")
   ;; this answer generated with /usr/bin/md5 for comparison purposes...
   (test-answer #:getter test-answer 
-               #:init-value  "2e87284d245c2aae1c74fa4c50a74c77"))
+               #:init-value  "2e87284d245c2aae1c74fa4c50a74c77")
 
+  ;; These digests from RFC 1321 test suite.
+  (test-digests #:getter test-digests
+                #:init-value
+   '(("" . "d41d8cd98f00b204e9800998ecf8427e")
+     ("a" . "0cc175b9c0f1b6a831c399e269772661")
+     ("abc" . "900150983cd24fb0d6963f7d28e17f72")
+     ("message digest" . "f96b697d7cb7938d525a2f31aaf161d0")
+     ("abcdefghijklmnopqrstuvwxyz" . "c3fcd3d76192e4007dfb496cca67e13b")
+     ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" . "d174ab98d277d9f5a5611c2c9f419d9f")
+     ("12345678901234567890123456789012345678901234567890123456789012345678901234567890" . "57edf4a22be3c955ac49da2e2107b67a"))))
 
 (define-method (test-default-port (self <test-md5>))
   (assert-equal (test-answer self) 
@@ -37,6 +47,12 @@
 (define-method (test-given-port (self <test-md5>))
   (assert-equal (test-answer self) 
                 (md5 (open-input-string (test-string self)))))
+
+(define-method (test-rfc (self <test-md5>))
+  (for-each (lambda (pair)
+              (assert-equal (cdr pair)
+                            (md5 (open-input-string (car pair)))))
+            (test-digests self)))
 
 (exit-with-summary (run-all-defined-test-cases))
 

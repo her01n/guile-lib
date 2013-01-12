@@ -352,6 +352,12 @@ referenced C implementation into Scheme.
 		       (assq-ref (assq-ref context 'buffer)
 				 'data-size)
 		       (integer->char #x80))
+	  (assq-set! (assq-ref context 'buffer)
+		     'data-size
+		     (+ (assq-ref (assq-ref context 'buffer)
+				  'data-size)
+			1))
+
 	  (while (< (assq-ref (assq-ref context 'buffer)
 			      'data-size)
 		    64)
