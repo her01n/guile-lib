@@ -1,5 +1,5 @@
 ;; (apicheck) -- check for API incompatibilities
-;; Copyright (C) 2007  Andy Wingo <wingo at pobox dot com>
+;; Copyright (C) 2007, 2013  Andy Wingo <wingo at pobox dot com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,11 +38,34 @@
 
   #:export (apicheck-generate apicheck-validate))
 
+(define *path* (make-fluid))
+(fluid-set! *path* '())
+
+(define-macro (with-path k v body)
+  `(with-fluids ((*path* (acons ,k ,v (fluid-ref *path*))))
+     ,body))
+
+(define (write-current-path port)
+  (for-each (lambda (p)
+              (format port "In ~a ~a:\n" (car p) (cdr p)))
+            (fluid-ref *path*)))
+
+(define (fail message . args)
+  (write-current-path (current-error-port))
+  (display message (current-error-port))
+  (for-each (lambda (x)
+              (display #\space (current-error-port))
+              (write x (current-error-port)))
+            args)
+  (newline (current-error-port))
+  (error "API changed incompatibly")
+  (apply error message args))
+
 (define (interface module)
   (case (module-kind module)
     ((interface) module)
     (else
-     (error "Invalid API: imported module ~a not an interface" module))))
+     (fail "Invalid API: imported module ~a not an interface" module))))
 
 (define (module-all-uses module)
   (let ((direct (module-uses module)))
@@ -116,7 +139,7 @@
 (define (variable-type sym var)
   (let ((val (catch #t
                     (lambda () (variable-ref var))
-                    (lambda args (error "unbound variable" sym)))))
+                    (lambda args (fail "unbound variable" sym)))))
     (cond
      ((is-a? val <class>) (list 'class))
      ((is-a? val <generic>) (cons 'generic
@@ -188,7 +211,7 @@
         (warn "New API, update your API form" new)))
   (let ((missing (lset-difference equal? expected actual)))
     (if (not (null? missing))
-        (error "Public API has been removed" missing))))
+        (fail "Public API has been removed" missing))))
 
 (define (arities-compatible? old new)
   ;; arity := (arity nrequired noptional rest?)
@@ -219,34 +242,39 @@
       (let ((actual-type (car actual))
             (actual-args (cdr actual)))
         (or (eq? expected-type actual-type)
-            (error "API break: export changed type"
+            (fail "API break: export changed type"
                    name expected-type actual-type))
         (or (case expected-type
               ((generic)
+               (pk name expected-args actual-args)
                (method-specializers-compatible? expected-args actual-args))
               ((procedure)
                (arities-compatible? (car expected-args) (car actual-args)))
               (else ;; pass
                #t))
-            (error "API break: export changed type incompatibly"
+            (fail "API break: export changed type incompatibly"
                    type-form actual))))))
 
 (define (apicheck-validate-module module-form)
-  (let ((interface (resolve-interface (car module-form)))
-        (uses-interfaces (cdr (assq 'uses-interfaces module-form)))
-        (typed-exports (cdr (assq 'typed-exports module-form))))
-    (assert-sets-compatible! 
-     uses-interfaces
-     (map module-name (module-uses interface)))
-    (assert-sets-compatible!
-     (map car typed-exports)
-     (module-exports-sorted interface))
-    (for-each
-     (lambda (form)
-       (apicheck-validate-var-type
-        form
-        (module-local-variable interface (car form))))
-     typed-exports)))
+  (with-path "module" (car module-form)
+    (let ((interface (resolve-interface (car module-form)))
+          (uses-interfaces (cdr (assq 'uses-interfaces module-form)))
+          (typed-exports (cdr (assq 'typed-exports module-form))))
+      (with-path "re-exported interfaces" uses-interfaces
+        (assert-sets-compatible!
+         uses-interfaces
+         (map module-name (module-uses interface))))
+      (with-path "exports" (map car typed-exports)
+        (assert-sets-compatible!
+         (map car typed-exports)
+         (module-exports-sorted interface)))
+      (for-each
+       (lambda (form)
+         (with-path "exported binding" (car form)
+           (apicheck-validate-var-type
+            form
+            (module-local-variable interface (car form)))))
+       typed-exports))))
 
 (define (apicheck-validate api module-names)
   "Validate that the API exported by the set of modules
@@ -259,7 +287,8 @@
              *apicheck-major-version* *apicheck-minor-version* api))
 
   (let ((module-forms (cddr api)))
-    (assert-sets-compatible!
-     (map car module-forms)
-     (map module-name (all-public-interfaces module-names)))
+    (with-path "toplevel exports" (map car module-forms)
+     (assert-sets-compatible!
+      (map car module-forms)
+      (map module-name (all-public-interfaces module-names))))
     (for-each apicheck-validate-module module-forms)))
