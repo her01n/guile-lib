@@ -1,5 +1,5 @@
 ;; (md5) -- md5 hashing in scheme
-;; Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+;; Copyright (C) 2001, 2002, 2003, 2013 Free Software Foundation, Inc.
 ;; Copyright (C) 2004 Moritz Schulte <moritz@gnu.org>.
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -347,9 +347,9 @@ referenced C implementation into Scheme.
 					   'data-size)
 				 1)))))
 	(begin
-	  (string-set! (assq-ref (assq-ref 'context 'buffer)
+	  (string-set! (assq-ref (assq-ref context 'buffer)
 				 'space)
-		       (assq-ref (assq-ref 'context 'buffer)
+		       (assq-ref (assq-ref context 'buffer)
 				 'data-size)
 		       (integer->char #x80))
 	  (while (< (assq-ref (assq-ref context 'buffer)
@@ -360,7 +360,7 @@ referenced C implementation into Scheme.
 					  'space)
 				(assq-ref (assq-ref context 'buffer)
 					  'data-size)
-				0)
+				#\nul)
 		   (assq-set! (assq-ref context 'buffer)
 			      'data-size
 			      (+ (assq-ref (assq-ref context 'buffer)
