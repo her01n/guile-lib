@@ -2,6 +2,13 @@
   '((h2 "news")
 
     (news
+     (@ (date "31 January 2013")
+        (title "guile-lib 0.2.2 available"))
+     (code "guile-lib") " 0.2.2 has been released. Check the "
+     (a (@ (href "http://download.savannah.gnu.org/releases/guile-lib/NEWS")) "NEWS")
+     " for details.")
+
+    (news
      (@ (date "3 April 2011")
         (title "guile-lib 0.2.1 available"))
      (code "guile-lib") " 0.2.1 has been released. Check the "

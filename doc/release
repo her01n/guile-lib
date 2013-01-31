@@ -7,14 +7,10 @@ How
 3) Figure out the new version. Modify configure.ac to have the new
    version. Update doc/guile-library.scm's date and version.
 
-4) Edit the NEWS file, using the ChangeLog as a starting point.
-User-visible changes only.
+4) Edit the NEWS file, using the revision log as a starting point.
+   User-visible changes only.
 
 5) Update the README if appropriate.
-
-6) Commit with the new version and NEWS updates. Add a line to Changelog
-   like:
-   == Guile-Lib XXX released ==
 
 7) Re-autogen and make dist.
 

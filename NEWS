@@ -2,6 +2,16 @@
 Guile-Lib NEWS
 
 
+guile-lib 0.2.2 -- 2013-01-31
+=============================
+
+* Install (texinfo nodal-tree) for Guile 2.0.
+
+* MD5 bugfixes.
+
+* Better errors in Apicheck.
+
+
 guile-lib 0.2.1 -- 2011-04-03
 =============================
 
