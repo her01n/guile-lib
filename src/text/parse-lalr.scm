@@ -1,5 +1,5 @@
 ;; (text parse-lalr) -- yacc's parser generator, in Guile
-;; Copyright (C) 1984,1989,1990  Free Software Foundation, Inc.
+;; Copyright (C) 1984,1989,1990,2013  Free Software Foundation, Inc.
 ;; Copyright (C) 1996-2002  Dominique Boucher
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -1416,7 +1416,7 @@ produced by bison when given the -v command-line option.
 				(lalr-error "Invalid terminal or nonterminal" x)))
 			  rhs)
 		(if (and (pair? rest)
-			 (eq? (car rest) ':)
+			 (eq? (car rest) (string->symbol ":"))
 			 (pair? (cdr rest)))
 		    (loop1 (cddr rest)
 			   (+ i 1)
