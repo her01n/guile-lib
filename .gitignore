@@ -1,6 +1,8 @@
 .bzrignore
 Makefile
 Makefile.in
+dev-environ
+build-aux
 *.go
 /aclocal.m4
 /autom4te.cache
@@ -30,7 +32,12 @@ Makefile.in
 /doc/guile-library.tps
 /doc/guile-library.vr
 /doc/guile-library.vrs
+/doc/guile-library.dvi
+/doc/guile-library.html/
+/doc/guile-library.t2d/
+/doc/guile-library.t2p/
 /doc/guile-libraryscmfiles
+/doc/guile-librarydepfiles
 /doc/html
 /doc/html-stamp
 /doc/www/index.html
