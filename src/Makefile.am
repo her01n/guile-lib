@@ -1,4 +1,32 @@
-moddir=$(prefix)/share/guile/site
+
+####
+#### Copyright (C) 2016 David Pirotte
+#### David Pirotte <david at altosw dot be>
+
+#### This file is part of Guile-Lib.
+
+#### Guile-Lib is free software: you can redistribute it, as a whole,
+#### and/or modify it under the terms of the GNU General Public
+#### License as published by the Free Software Foundation, either
+#### version 3 of the License, or (at your option) any later version.
+
+#### Each Guile-Lib module contained in Guile-Lib has its own copying
+#### conditions, specified in the comments at the beginning of the
+#### module's source file.
+
+#### Guile-Lib is distributed in the hope that it will be useful, but
+#### WITHOUT ANY WARRANTY; without even the implied warranty of
+#### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#### General Public License for more details.
+
+#### You should have received a copy of the GNU General Public License
+#### along with Guile-Lib.  If not, see
+#### <http://www.gnu.org/licenses/>.
+####
+
+
+moddir = $(GUILE_GLOBAL_SITE)
+godir= $(GUILE_SITE_CCACHE)
 
 SXML_FILES =					\
 	sxml/apply-templates.scm		\
@@ -40,7 +68,10 @@ SXML_SOURCES =
 TEXINFO_SOURCES =
 STATPROF_SOURCES =
 
-EXTRA_DIST = $(SXML_FILES) $(TEXINFO_FILES) $(STATPROF_FILES)
+EXTRA_DIST = \
+	$(SXML_FILES)		\
+	$(TEXINFO_FILES)	\
+	$(STATPROF_FILES)
 
 else !HAVE_GUILE_COMPILE
 
@@ -94,11 +125,19 @@ else
 GOBJECTS =
 endif
 
-nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES) $(GOBJECTS)
-EXTRA_DIST += $(SOURCES) $(NOCOMP_SOURCES)
+nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES)
+nobase_go_DATA = $(GOBJECTS)
+
+EXTRA_DIST += \
+	$(SOURCES)		\
+	$(NOCOMP_SOURCES)
 
 CLEANFILES = $(GOBJECTS)
 
 SUFFIXES = .scm .go
 .scm.go:
 	$(top_builddir)/dev-environ $(GUILE_COMPILE) -o "$@" "$<"
+
+# to check/debug
+printenv:
+	printf '$(moddir)\n$(godir)\n'
