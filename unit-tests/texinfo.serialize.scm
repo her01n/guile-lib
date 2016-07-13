@@ -107,7 +107,7 @@
                     "@iftex 
 This is only for tex.
 
-Note. Foo.
+Note.  Foo.
 
 @end iftex
 
