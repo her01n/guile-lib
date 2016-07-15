@@ -1,0 +1,11 @@
+# Package Information for pkg-config
+
+prefix=@prefix@
+module_directory=@GUILE_GLOBAL_SITE@
+
+Name: Guile-Lib
+
+Description: Guile-lib, also known as Guile-Library, is a down-scaled,
+limited-scope CPAN for Guile
+
+Version: @VERSION@

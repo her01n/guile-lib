@@ -12,6 +12,7 @@ build-aux
 /configure
 /install-sh
 /missing
+/meta/guile-lib-1.0.pc
 /doc/guile-library.info
 /doc/stamp-vti
 /doc/version.texi

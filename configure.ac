@@ -33,6 +33,9 @@ along with Guile-Lib.  If not, see
 
 AC_PREREQ(2.69)
 
+dnl let's bump the version to x.x.x-dev while working on the devel
+dnl branch, so who ever uses it and/or run 'make dist' or 'make
+dnl distcheck' are aware it is a wip version.
 AC_INIT(
   [guile-lib],
   [0.2.3-dev],
@@ -55,11 +58,10 @@ AC_CONFIG_SRCDIR(src/md5.scm)
 AC_SUBST(ACLOCAL_FLAGS,$ACLOCAL_FLAGS)
 
 GUILE_PKG([2.2 2.0])
-dnl must be changed to 2.0.12 before to release it needs recent
-dnl stable-2.0 texinfo patches so 'make check' pass. I'm using git so
-dnl I have all these patches locally, however 2.0.11 distro would
-dnl fail.
-GUILE_PROGS([2.0.11])
+dnl although no change has been made to any module, we bumped the
+dnl dependency version to 2.0.12 [or higher], because it has texinfo
+dnl patches so 'make check' pass.
+GUILE_PROGS([2.0.12])
 GUILE_SITE_DIR
 GUILE_GLOBAL_SITE_DIR
 GUILE_SITE_CCACHE_DIR
@@ -77,6 +79,7 @@ AC_CONFIG_FILES(
   [chmod +x dev-environ])
 
 AC_CONFIG_FILES([
+  meta/guile-lib-1.0.pc
   Makefile
   src/Makefile
   doc/Makefile

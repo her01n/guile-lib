@@ -26,6 +26,7 @@
 
 
 pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA=meta/guile-lib-1.0.pc
 
 SUBDIRS = 		\
 	src 		\
@@ -45,7 +46,9 @@ EXTRA_DIST = \
 	NEWS				\
 	README				\
 	dev-environ.in			\
+	meta/guile-lib-1.0.pc.in	\
 	$(wildcard m4/*)
+
 
 distclean-local:
 	rm -f Makefile.in
