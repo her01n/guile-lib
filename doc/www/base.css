@@ -2,7 +2,7 @@ body {
   background-color: #ccc;
   margin: 0;
   color: #000;
-  font-family: serif;
+  font-family: sans-serif;
 }
 
 div#body {
@@ -143,4 +143,21 @@ div.cartouche {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+ul.code {
+    margin: 8px 10px 10px -10px;
+    list-style-type: none;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #1e3f18;
+}
+
+code {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #1e3f18;
+    /* #702070; mauve */
+    /* #c18928; orange claws-mail */
+    /* #1e3f18; dark green */    
 }

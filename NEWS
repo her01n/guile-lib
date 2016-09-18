@@ -2,6 +2,45 @@
 Guile-Lib NEWS
 
 
+guile-lib 0.2.3 -- 2016-09-19
+=============================
+
+This is a maintenance release, source code is unchanged compare to the
+previous release.  This release introduces a guile-lib-1.0.pc, so libs
+and apps that needs guile-lib may now use pkgconfig to check if it's
+available, what version.
+
+Note that starting with this release, the installation location for
+modules and compiled files has changed: make sure you uninstall any
+previous version of guile-lib.
+
+* Dependencies bumped:
+
+	Autogen  >= 2.69
+	Automake >= 1.14
+	Guile    >= 2.0.12
+
+* Modules installation location changed:
+
+	from $(prefix)/share/guile/site
+	to $(GUILE_GLOBAL_SITE)
+
+  You will need write privileges to this directory to install
+  guile-lib. You may check its location using the folowing command:
+
+	guile -c "(display (%global-site-dir)) (newline)"
+
+* Compiled files installation location changed:
+
+	from $(prefix)/share/guile/site
+	to $(GUILE_SITE_CCACHE)
+
+  You will need write privileges to this directory to install
+  guile-lib. You may check its location using the folowing command:
+
+	guile -c "(display (%site-ccache-dir)) (newline)"
+
+
 guile-lib 0.2.2 -- 2013-01-31
 =============================
 

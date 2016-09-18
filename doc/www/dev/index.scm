@@ -6,9 +6,10 @@
 
     (h3 "dependencies")
 
-    (p (code "guile-lib") " works with the current "
-       (a (@ (href "http://www.gnu.org/software/guile/")) "Guile") " 1.8"
-       ", as well as with the old 1.6 stable series.")
+    (ul (@ (class "code"))
+	(li "Autoconf >= 2.69")
+	(li "Automake >= 1.14")
+	(li "Guile-2.0 >= 2.0.12 or Guile-2.2"))
 
     (h3 "source repository")
 
@@ -16,9 +17,12 @@
        (a (@ (href "http://git-scm.com/")) "git") ", a distributed "
        "version control system. To grab guile-lib, run the following:")
 
-    (pre "git clone " ,main-archive-url " guile-lib\n"
-         "cd guile-lib\n"
-         "./autogen.sh --prefix=... && make")
+    (ul (@ (class "code"))
+	(li "git clone " ,main-archive-url " guile-lib")
+        (li "cd guile-lib")
+        (li "./autogen.sh")
+	(li "./configure [--prefix=...]")
+	(li "make"))
 
     (p "At that point you can install guile-lib with " 
        (code "make install") ", or run it uninstalled using the "
@@ -44,10 +48,11 @@
        "with committing, just do a " (code "git diff > mypatch.patch") ". "
        "Otherwise, send your patches using " (code "git-format-patch") ":")
 
-    (pre "# hack hack hack\n"
-         "git commit -a -m 'fixed my thing'\n"
-         "git format-patch origin/master..HEAD\n"
-         "# then attach the generated patch files to a mail to the list")
+    (ul (@ (class "code"))
+	(li "# hack hack hack")
+	(li "git commit -a -m 'fixed my thing'")
+	(li "git format-patch origin/master..HEAD")
+	(li "# then attach the generated patch files to a mail to the list"))
     
     (h3 "savannah project page")
 
