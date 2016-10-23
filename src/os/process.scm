@@ -141,7 +141,10 @@ Examples:
 ;;; matter, making it unbuffered would just slow things down.
 (define (unbuffered-pipe)
   (let ((result (pipe)))
-    (setvbuf (cdr result) _IONBF)
+    (cond-expand (guile-2.2
+		  (setvbuf (cdr result) 'none))
+		 (guile-2
+		  (setvbuf (cdr result) _IONBF)))
     result))
 
 ;;; generate the code needed to set up redirections for a child process.
