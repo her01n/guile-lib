@@ -25,6 +25,36 @@
 ####
 
 
+TEST_SXML_FILES = \
+	sxml.fold.scm			\
+	sxml.ssax.scm			\
+	sxml.transform.scm		\
+	sxml.xpath.scm
+
+TEST_TEXINFO_FILES = \
+	texinfo.scm			\
+	texinfo.docbook.scm		\
+	texinfo.serialize.scm		\
+	text.parse-lalr.scm
+
+TEST_STATPROF_FILES = \
+	statprof.scm
+
+
+if HAVE_GUILE_COMPILE
+
+TEST_SXML_SOURCES =
+TEST_TEXINFO_SOURCES =
+TEST_STATPROF_SOURCES =
+
+else !HAVE_GUILE_COMPILE
+
+TEST_SXML_SOURCES = $(TEST_SXML_FILES)
+TEST_TEXINFO_SOURCES = $(TEST_TEXINFO_FILES)
+TEST_STATPROF_SOURCES = $(TEST_STATPROF_FILES)
+
+endif !HAVE_GUILE_COMPILE
+
 TESTS= \
 	api.scm				\
 	container.async-queue.scm	\
@@ -37,20 +67,14 @@ TESTS= \
 	md5.scm				\
 	os.process.scm			\
 	search.basic.scm		\
-	statprof.scm			\
+	$(TEST_STATPROF_SOURCES)	\
 	scheme.kwargs.scm		\
 	string.completion.scm		\
 	string.transform.scm		\
 	string.wrap.scm			\
-	sxml.fold.scm			\
-	sxml.ssax.scm			\
-	sxml.transform.scm		\
-	sxml.xpath.scm			\
+	$(TEST_SXML_SOURCES)		\
 	term.ansi-color.scm		\
-	texinfo.scm			\
-	texinfo.docbook.scm		\
-	texinfo.serialize.scm		\
-	text.parse-lalr.scm
+	$(TEST_TEXINFO_SOURCES)
 
 TESTS_ENVIRONMENT=							\
 	API_FILE=$(srcdir)/guile-library.api				\
