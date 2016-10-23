@@ -235,11 +235,11 @@ AC_DEFUN([GUILE_SITE_CCACHE_DIR],
  [AC_REQUIRE([GUILE_PKG])
   AC_MSG_CHECKING(for Guile site-ccache directory)
   _guile_lib=`$PKG_CONFIG --print-errors --variable=libdir guile-$GUILE_EFFECTIVE_VERSION`
-  AC_MSG_RESULT($_guile_lib)
   if test "$_guile_lib" = ""; then
      AC_MSG_FAILURE(libdir not found)
   fi
   GUILE_SITE_CCACHE=$_guile_lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache
+  AC_MSG_RESULT($GUILE_SITE_CCACHE)
   AC_SUBST(GUILE_SITE_CCACHE)
  ])
 
