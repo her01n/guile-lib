@@ -110,7 +110,10 @@
       (throw 'test-failed-exception
              (with-output-to-string
                (lambda ()
-                 (display "assert-true: ")
+                 (display "assert-numeric-=: expected:\n")
+		 (pretty-print expected)
+		 (display " precision: ")
+		 (pretty-print precision)
                  (display " got: ")
                  (write got))))))
 
