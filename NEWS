@@ -2,6 +2,34 @@
 Guile-Lib NEWS
 
 
+Guile-Lib 0.2.4 -- 2016-11-14
+=============================
+
+This is a maintenance release, the next maintenance release for the
+Guile-Lib 0.2 series.
+
+* Bug fixes
+	
+  (unit-test)
+
+	assert-numeric-= 'test-failed-exception report message was
+	inadequate and has been fixed.
+	
+  Do not check what is not installed
+
+	starting with Guile-2.0, some Guile-Lib modules became Guile
+	core modules, and not installed.  However, we all forgot to
+	adapt the test-suite so it does not check for these not instlled
+	modules anymore, fixed.
+
+  Install source files first
+
+    	Make sure source files are installed first, so that the mtime of
+        installed compiled files is greater than that of installed
+        source files, in order to avoid a rather annoying local
+        (per-user) recompilation of Guile-Lib modules.
+
+
 guile-lib 0.2.3 -- 2016-09-19
 =============================
 
