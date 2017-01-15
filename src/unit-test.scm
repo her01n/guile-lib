@@ -26,6 +26,7 @@
   #:use-module (ice-9 pretty-print)
   #:export (assert-equal
             assert-true
+            assert-false
             assert-numeric-=
             <test-result> 
             tests-run 
@@ -46,7 +47,8 @@
             run-all-defined-test-cases
             exit-with-summary)
   
-  #:export-syntax (assert-exception))
+  #:export-syntax (assert
+                   assert-exception))
 
 
  ;; Utility method for finding an object's method given its name. The
@@ -105,31 +107,48 @@
                  (display " got: ")
                  (write got))))))
 
+(define (assert-false got)
+  (if got
+      (throw 'test-failed-exception
+             (with-output-to-string
+               (lambda ()
+                 (display "assert-false: ")
+                 (display " got: ")
+                 (write got))))))
+
 (define (assert-numeric-= expected got precision)
   (if (> (abs (- expected got)) precision)
       (throw 'test-failed-exception
              (with-output-to-string
                (lambda ()
                  (display "assert-numeric-=: expected:\n")
-		 (pretty-print expected)
-		 (display " precision: ")
-		 (pretty-print precision)
+                 (pretty-print expected)
+                 (display " precision: ")
+                 (pretty-print precision)
                  (display " got: ")
                  (write got))))))
 
+(define-macro (assert expression)
+  `(catch #t
+     (lambda () ,expression)
+     (lambda (key . args)
+       (throw
+        'test-failed-exception
+        (format #f "assert: exception on ~S"
+                ',expression)))))
 
 (define-macro (assert-exception expression)
   `(catch #t
-          (lambda ()
-            ,expression
-            (throw
-             'test-failed-exception
-             (format #f "assert-exception: no exception on ~S"
-                     ',expression)))
-          (lambda (key . args)
-            (case key
-              ((test-failed-exception) (apply throw key args))
-              (else #t)))))
+     (lambda ()
+       ,expression
+       (throw
+        'test-failed-exception
+        (format #f "assert-exception: no exception on ~S"
+                ',expression)))
+     (lambda (key . args)
+       (case key
+         ((test-failed-exception) (apply throw key args))
+         (else #t)))))
 
 
 ;;;----------------------------------------------------------------
