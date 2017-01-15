@@ -39,7 +39,7 @@
           (div (@ (id "footer"))
                "(powered by " (a (@ (href ,scm-path)) "sxml") ")"
                (br)
-               "Copyright (C) 2003-2011, 2016 Richard Todd, Andreas Rottmann, Andy Wingo."
+               "Copyright (C) 2003-2011, 2016-2017 Richard Todd, Andreas Rottmann, Andy Wingo."
                (br)
                "Verbatim copying and distribution of this entire article "
                "is permitted in any medium, provided this notice is preserved.")))))
