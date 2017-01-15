@@ -2,6 +2,24 @@
 Guile-Lib NEWS
 
 
+Guile-Lib 0.2.5 -- 2017-01-17
+=============================
+
+This is a maintenance release, the next maintenance release for the
+Guile-Lib 0.2 series.
+
+* (unit-test) 2 new APIs
+
+  Prodedure: assert-false expr
+  Special Form: assert expr
+
+  assert-false will throw a 'test-failed-exception unless the evaluation
+  of expr returns #f.
+
+  assert will throw a 'test-failed-exception if expr raises an
+  exception.
+
+
 Guile-Lib 0.2.4 -- 2016-11-14
 =============================
 
