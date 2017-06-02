@@ -6,7 +6,7 @@ dnl
 
 define(GUILE_LIB_CONFIGURE_COPYRIGHT,[[
 
-Copyright (C) 2016 David Pirotte
+Copyright (C) 2016 -  2017 David Pirotte
 David Pirotte <david at altosw dot be>
 
 This file is part of Guile-Lib.
@@ -38,7 +38,7 @@ dnl branch, so who ever uses it and/or run 'make dist' or 'make
 dnl distcheck' are aware it is a wip version.
 AC_INIT(
   [guile-lib],
-  [0.2.5],
+  [0.2.5.1],
   [guile-devel at gnu dor org])
 
 AC_CONFIG_AUX_DIR([build-aux])
