@@ -57,7 +57,7 @@ AC_CONFIG_SRCDIR(src/md5.scm)
 
 AC_SUBST(ACLOCAL_FLAGS,$ACLOCAL_FLAGS)
 
-GUILE_PKG([2.2 2.0])
+GUILE_PKG([3.0 2.2 2.0])
 dnl although no change has been made to any module, we bumped the
 dnl dependency version to 2.0.12 [or higher], because it has texinfo
 dnl patches so 'make check' pass.
