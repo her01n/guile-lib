@@ -1,7 +1,11 @@
 # Package Information for pkg-config
 
 prefix=@prefix@
-module_directory=@GUILE_GLOBAL_SITE@
+exec_prefix=@exec_prefix@
+datarootdir=@datarootdir@
+
+sitedir=@SITEDIR@
+siteccachedir=@SITECCACHEDIR@
 
 Name: Guile-Lib
 
