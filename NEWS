@@ -2,6 +2,58 @@
 
 #+TITLE: Guile-Lib NEWS
 
+* June 2018
+
+Guile-Lib version 0.2.6 is released.  This is a maintenance release,
+fixing the default installation locations, and adding a new configure
+option - see below for a complete description of these changes.
+
+** Changes since 0.2.5.1
+
+Here is a summary of the changes since version 0.1.2. See Guile-Lib's
+[[http://git.savannah.nongnu.org/cgit/guile-lib.git][git summary]] and [[http://git.savannah.nongnu.org/cgit/guile-lib.git/log/][git log]] for a complete description.
+
+*** Installation location changes
+
+The default and --prefix installation locations for source modules and
+compiled files has been changed, and, in the absence of the new
+configure option described below, are now:
+
+  $(datadir)/guile-lib
+  $(libdir)/guile-lib/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
+
+In the above, $(datadir) is substituted to the default /usr/local/share
+or /your/prefix/share and $(libdir) is substituted to /usr/local/lib or
+/your/prefix/lib, when/if --prefix was passed.
+
+$(GUILE_EFFECTIVE_VERSION) is substituted to the stable version number
+with which Guile-Lib is being compile, for example, 2.2
+
+This change makes Guile-Lib compatible with the GNU Coding Standards,
+but it also implies that, unless you use the new configure option
+describe below, you will have to augment both Guile's variables
+%load-path and %load-compiled-pat (see 'Environment Variables'
+in Guile's Reference Manual) before to use Guile-Lib's modules.
+
+*** New configure option
+
+The configure option --with-guile-site has been added, used to
+explicitly ask Guile-Lib's source modules and compiled files to be
+installed using Guile's global site and site-ccache directories
+respectively.
+
+It will only be honored if (and only if) it is passed as:
+
+  --with-guile-site=yes
+
+  [ in this case, there is obviously no need to augment Guile's
+  [ variables %load-path and %load-compiled-path
+
+The configure step now lists the following variables: prefix,
+exec_prefix, datarootdir, sitedir and siteccachedir.  It will also warn
+the user if the last two variables differ from Guile's site and
+site-ccache values.
+
 
 * Guile-Lib 0.2.5.1 -- 2017-06-02
 
