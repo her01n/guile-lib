@@ -115,7 +115,7 @@ AC_MSG_NOTICE(
   [exec_prefix=${exec_prefix}]
   [datarootdir=${datarootdir}]
   [sitedir (source code): ${SITEDIR}]
-  [siteccache (compiled modules): ${SITECCACHEDIR}]
+  [siteccachedir (compiled modules): ${SITECCACHEDIR}]
   [])
 
 if test "x$guile_site" = "x"; then
