@@ -49,10 +49,10 @@ dummy:
 
 $(doc).texi: $(srcdir)/$(doc).scm $(depfiles)
 	GUILE_AUTO_COMPILE=0								\
-	$(top_builddir)/dev-environ $(srcdir)/make-texinfo.scm $(srcdir)/$(doc).scm >$@
+	$(top_builddir)/pre-inst-env $(srcdir)/make-texinfo.scm $(srcdir)/$(doc).scm >$@
 
 html-local: html-stamp $(srcdir)/$(doc).scm $(depfiles)
 html-stamp:
 	GUILE_AUTO_COMPILE=0								\
-	$(top_builddir)/dev-environ $(srcdir)/make-html.scm $(srcdir)/$(doc).scm
+	$(top_builddir)/pre-inst-env $(srcdir)/make-html.scm $(srcdir)/$(doc).scm
 	touch $@

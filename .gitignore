@@ -1,7 +1,7 @@
 .bzrignore
 Makefile
 Makefile.in
-dev-environ
+pre-inst-env
 build-aux
 *.go
 /aclocal.m4

@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 David Pirotte
+#### Copyright (C) 2016 - 2018 David Pirotte
 #### David Pirotte <david at altosw dot be>
 
 #### This file is part of Guile-Lib.
@@ -40,20 +40,14 @@ TEST_TEXINFO_FILES = \
 TEST_STATPROF_FILES = \
 	statprof.scm
 
+# Guile-Lib depends on Guile 2.0, and Guile 2.0 already comes with the
+# `(sxml ...)' and `(texinfo ...)' modules unmodified. We don't need
+# the following variables anymore, also removed from the TESTS
+# definition below.
 
-if HAVE_GUILE_COMPILE
-
-TEST_SXML_SOURCES =
-TEST_TEXINFO_SOURCES =
-TEST_STATPROF_SOURCES =
-
-else !HAVE_GUILE_COMPILE
-
-TEST_SXML_SOURCES = $(TEST_SXML_FILES)
-TEST_TEXINFO_SOURCES = $(TEST_TEXINFO_FILES)
-TEST_STATPROF_SOURCES = $(TEST_STATPROF_FILES)
-
-endif !HAVE_GUILE_COMPILE
+# TEST_STATPROF_SOURCES =
+# TEST_SXML_SOURCES =
+# TEST_TEXINFO_SOURCES =
 
 TESTS= \
 	api.scm				\
@@ -67,20 +61,18 @@ TESTS= \
 	md5.scm				\
 	os.process.scm			\
 	search.basic.scm		\
-	$(TEST_STATPROF_SOURCES)	\
 	scheme.kwargs.scm		\
 	string.completion.scm		\
 	string.transform.scm		\
 	string.wrap.scm			\
-	$(TEST_SXML_SOURCES)		\
-	term.ansi-color.scm		\
-	$(TEST_TEXINFO_SOURCES)
+	term.ansi-color.scm
+
 
 TESTS_ENVIRONMENT=							\
 	API_FILE=$(srcdir)/guile-library.api				\
 	DOC_GUILE_LIBRARY_SCM=$(top_srcdir)/doc/guile-library.scm	\
 	GUILE_AUTO_COMPILE=0						\
-	$(top_builddir)/dev-environ $(GUILE) -s
+	$(top_builddir)/pre-inst-env $(GUILE) -s
 
 script := '(load (getenv "DOC_GUILE_LIBRARY_SCM"))\
 (for-each \
@@ -89,7 +81,7 @@ script := '(load (getenv "DOC_GUILE_LIBRARY_SCM"))\
  *modules*)'
 
 guile-library.api.update:
-	$(top_builddir)/dev-environ $(srcdir)/update-api \
+	$(top_builddir)/pre-inst-env $(srcdir)/update-api \
 	$(shell DOC_GUILE_LIBRARY_SCM=$(top_srcdir)/doc/guile-library.scm \
 	   guile -c $(script)) > $(srcdir)/guile-library.api
 

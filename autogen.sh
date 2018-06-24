@@ -19,4 +19,4 @@ touch build-aux/config.rpath
 autoreconf -vif
 
 echo
-echo "Now run ./configure --prefix=/your/prefix."
+echo "Now run ./configure [--prefix=/your/prefix] [--with-guile-site=yes]"
