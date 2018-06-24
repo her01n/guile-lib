@@ -38,7 +38,7 @@ dnl branch, so who ever uses it and/or run 'make dist' or 'make
 dnl distcheck' are aware it is a wip version.
 AC_INIT(
   [guile-lib],
-  [0.2.5.1],
+  [0.2.6],
   [guile-devel at gnu dor org])
 
 AC_CONFIG_AUX_DIR([build-aux])
