@@ -6,7 +6,7 @@ dnl
 
 define(GUILE_LIB_CONFIGURE_COPYRIGHT,[[
 
-Copyright (C) 2016 -  2017 David Pirotte
+Copyright (C) 2016 -  2018 David Pirotte
 David Pirotte <david at altosw dot be>
 
 This file is part of Guile-Lib.
@@ -57,6 +57,7 @@ AC_CONFIG_SRCDIR(src/md5.scm)
 
 AC_SUBST(ACLOCAL_FLAGS,$ACLOCAL_FLAGS)
 
+
 GUILE_PKG([2.2 2.0])
 dnl although no change has been made to any module, we bumped the
 dnl dependency version to 2.0.12 [or higher], because it has texinfo
@@ -67,16 +68,34 @@ GUILE_GLOBAL_SITE_DIR
 GUILE_SITE_CCACHE_DIR
 GUILE_FLAGS
 
-dnl this should disappear
-dnl but for now we'll keep it, it's used 'en aval'
-HAVE_GUILE_COMPILE=1
-GUILE_COMPILE="guild compile"
-AC_SUBST(GUILE_COMPILE)
-AM_CONDITIONAL(HAVE_GUILE_COMPILE, test "$HAVE_GUILE_COMPILE" = 1)
+
+AC_ARG_WITH(
+  [guile-site],
+  [AS_HELP_STRING(
+     [--with-guile-site],
+     [install source modules and compiled files using Guile's site and site-ccache dirs])],
+  [case "x$withval" in
+     xyes)
+     guile_site="yes";;
+     *)
+     guile_site="";;
+   esac],
+  [guile_site=""])
+
+if test "x$guile_site" = "xyes"; then
+   SITEDIR="$GUILE_GLOBAL_SITE";
+   SITECCACHEDIR="$GUILE_SITE_CCACHE";
+else
+   SITEDIR="$datadir/guile-lib";
+   SITECCACHEDIR="$libdir/guile-lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache";
+fi
+AC_SUBST([SITEDIR])
+AC_SUBST([SITECCACHEDIR])
+
 
 AC_CONFIG_FILES(
-  [dev-environ],
-  [chmod +x dev-environ])
+  [pre-inst-env],
+  [chmod +x pre-inst-env])
 
 AC_CONFIG_FILES([
   meta/guile-lib-1.0.pc
@@ -88,3 +107,23 @@ AC_CONFIG_FILES([
 ])
 
 AC_OUTPUT
+
+AC_MSG_NOTICE(
+  []
+  []
+  [prefix=${prefix}]
+  [exec_prefix=${exec_prefix}]
+  [datarootdir=${datarootdir}]
+  [sitedir (source code): ${SITEDIR}]
+  [siteccache (compiled modules): ${SITECCACHEDIR}]
+  [])
+
+if test "x$guile_site" = "x"; then
+  AC_MSG_WARN(
+    []
+    [The above last two variables differs from the one used by Guile itself,]
+    [you have to augment Guile's both %load-path and %load-compiled-path]
+    [variables (see 'Environment Variables' in Guile Reference Manual)]
+    [before to use Guile-Lib's modules.]
+    [])
+fi
