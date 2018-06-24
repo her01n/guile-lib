@@ -9,7 +9,7 @@
 
 ;; Copying the documentation
 (define *copyright-holder* "Andy Wingo, Richard Todd")
-(define *years* '(2003 - 2007 2010 2011 2016 - 2018))
+(define *years* '(2003 2007 2010 2011 2016 2017 2018))
 (define *permissions*
   "Permission is granted to copy, distribute and/or
 modify this document under the terms of the GNU Free
