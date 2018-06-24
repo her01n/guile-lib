@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 David Pirotte
+#### Copyright (C) 2018 David Pirotte
 #### David Pirotte <david at altosw dot be>
 
 #### This file is part of Guile-Lib.
@@ -45,8 +45,9 @@ EXTRA_DIST = \
 	INSTALL				\
 	NEWS				\
 	README				\
-	dev-environ.in			\
+	pre-inst-env.in			\
 	meta/guile-lib-1.0.pc.in	\
+	$(wildcard am/*)		\
 	$(wildcard m4/*)
 
 
@@ -56,7 +57,7 @@ distclean-local:
 	rm -rf autom4te.cache
 	rm -rf build-aux
 	rm -f configure
-	rm -f dev-environ
+	rm -f pre-inst-env
 	rm -f meta/guile-lib-1.0.pc
 	rm -f *~
 	rm -f guile-lib-*.tar.gz
