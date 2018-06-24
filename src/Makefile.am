@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 David Pirotte
+#### Copyright (C) 2016 - 2018 David Pirotte
 #### David Pirotte <david at altosw dot be>
 
 #### This file is part of Guile-Lib.
@@ -25,8 +25,8 @@
 ####
 
 
-moddir = $(GUILE_GLOBAL_SITE)
-godir= $(GUILE_SITE_CCACHE)
+include $(top_srcdir)/am/guile.mk
+
 
 SXML_FILES =					\
 	sxml/apply-templates.scm		\
@@ -59,23 +59,15 @@ TEXINFO_FILES =					\
 STATPROF_FILES =				\
 	statprof.scm
 
-if HAVE_GUILE_COMPILE
 
-# Here we assume we are using Guile 2.0, and Guile 2.0 already comes
-# with the `(sxml ...)' and `(texinfo ...)' modules unmodified.
+# Guile-Lib depends on Guile 2.0, and Guile 2.0 already comes with the
+# `(sxml ...)' and `(texinfo ...)' modules unmodified. We don't need
+# the following variables anymore, also removed from the SOURCES
+# definition below.
 
-SXML_SOURCES =
-TEXINFO_SOURCES =
-STATPROF_SOURCES =
-
-else !HAVE_GUILE_COMPILE
-
-SXML_SOURCES = $(SXML_FILES)
-TEXINFO_SOURCES = $(TEXINFO_FILES)
-STATPROF_SOURCES = $(STATPROF_FILES)
-
-endif !HAVE_GUILE_COMPILE
-
+# SXML_SOURCES =
+# TEXINFO_SOURCES =
+# STATPROF_SOURCES =
 
 SOURCES = \
 	apicheck.scm			\
@@ -100,47 +92,23 @@ SOURCES = \
 	scheme/documentation.scm	\
 	scheme/kwargs.scm		\
 	search/basic.scm		\
-	$(STATPROF_SOURCES)		\
 	string/completion.scm		\
 	string/soundex.scm		\
 	string/transform.scm		\
 	string/wrap.scm			\
-        $(SXML_SOURCES)			\
 	term/ansi-color.scm		\
-	$(TEXINFO_SOURCES)		\
 	texinfo/nodal-tree.scm		\
 	text/parse-lalr.scm		\
 	unit-test.scm
 
-if HAVE_GUILE_COMPILE
-GOBJECTS = $(SOURCES:%.scm=%.go)
-else
-GOBJECTS =
-endif
 
 EXTRA_DIST = \
 	$(SOURCES)		\
 	$(NOCOMP_SOURCES)
 
+
 CLEANFILES = $(GOBJECTS)
 
-nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES)
-nobase_go_DATA = $(GOBJECTS)
 
-# Make sure source files are installed first, so that the mtime of
-# installed compiled files is greater than that of installed source
-# files.  See
-# <http://lists.gnu.org/archive/html/guile-devel/2010-07/msg00125.html>
-# for details.
-guile_install_go_files = install-nobase_goDATA
-$(guile_install_go_files): install-nobase_modDATA
-
-GUILE_WARNINGS = -Wunbound-variable -Warity-mismatch -Wformat
-
-SUFFIXES = .scm .go
-.scm.go:
-	$(top_builddir)/dev-environ $(GUILE_COMPILE) -o "$@" "$<"
-
-# to check/debug
 printenv:
 	printf '$(moddir)\n$(godir)\n'
