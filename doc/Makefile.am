@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 David Pirotte
+#### Copyright (C) 2018 David Pirotte
 #### David Pirotte <david at altosw dot be>
 
 #### This file is part of Guile-Lib.
@@ -24,8 +24,8 @@
 #### <http://www.gnu.org/licenses/>.
 ####
 
-
-AUTOMAKE_OPTIONS = gnu
+# we use wildcard - non-POSIX variable name
+# AUTOMAKE_OPTIONS = gnu
 
 doc = guile-library
 include docs.mk
