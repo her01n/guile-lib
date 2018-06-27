@@ -120,9 +120,10 @@ AC_MSG_NOTICE(
 if test "x$guile_site" = "x"; then
   AC_MSG_WARN(
     []
-    [The above last two variables differs from the one used by Guile itself,]
-    [you have to augment Guile's both %load-path and %load-compiled-path]
-    [variables (see 'Environment Variables' in Guile Reference Manual)]
-    [before to use Guile-Lib's modules.]
-    [])
+    [The above last two variables differs from the one used by Guile itself:]
+    [you have to augment Guile's %load-path and %load-compiled-path variables]
+    [before to use Guile-Lib's modules (see 'Environment Variables' and 'Load Paths']
+    [in Guile Reference Manual).]
+    []
+    [Otherwise, consider using --with-guile-site=yes])
 fi
