@@ -21,7 +21,7 @@
 	(li "git clone " ,main-archive-url " guile-lib")
         (li "cd guile-lib")
         (li "./autogen.sh")
-	(li "./configure [--prefix=...]")
+	(li "./configure [--prefix=/your/prefix] [--with-guile-site=yes]")
 	(li "make"))
 
     (p "At that point you can install guile-lib with " 
