@@ -77,16 +77,16 @@ AC_ARG_WITH(
      xyes)
      guile_site="yes";;
      *)
-     guile_site="";;
+     guile_site="no";;
    esac],
-  [guile_site=""])
+  [guile_site="no"])
 
 if test "x$guile_site" = "xyes"; then
    SITEDIR="$GUILE_GLOBAL_SITE";
    SITECCACHEDIR="$GUILE_SITE_CCACHE";
 else
-   SITEDIR="$datadir/guile-lib";
-   SITECCACHEDIR="$libdir/guile-lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache";
+   SITEDIR="$prefix/share/guile-lib";
+   SITECCACHEDIR="$prefix/lib/guile-lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache";
 fi
 AC_SUBST([SITEDIR])
 AC_SUBST([SITECCACHEDIR])
@@ -111,19 +111,20 @@ AC_MSG_NOTICE(
   []
   []
   [prefix=${prefix}]
-  [exec_prefix=${exec_prefix}]
-  [datarootdir=${datarootdir}]
+  [--with-guile-site="$guile_site"]
+  []
   [sitedir (source code): ${SITEDIR}]
   [siteccachedir (compiled modules): ${SITECCACHEDIR}]
   [])
 
-if test "x$guile_site" = "x"; then
+if test "x$guile_site" = "xno"; then
   AC_MSG_WARN(
     []
-    [The above last two variables differs from the one used by Guile itself:]
-    [you have to augment Guile's %load-path and %load-compiled-path variables]
-    [before to use Guile-Lib's modules (see 'Environment Variables' and 'Load Paths']
-    [in Guile Reference Manual).]
+    []
+    [Since --with-guile-site="no", sitedir and siteccachedir differ from]
+    [the one used by Guile itself. You have to augment both Guile's %load-path]
+    [and %load-compiled-path variables before to use Guile-Lib's modules (see]
+    ['Environment Variables' and 'Load Paths' in the Guile Reference Manual).]
     []
     [Otherwise, consider using --with-guile-site=yes])
 fi
