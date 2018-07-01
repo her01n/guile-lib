@@ -2,28 +2,23 @@
 
 #+TITLE: Guile-Lib NEWS
 
-* July 2018
+* XXX 2018
 
-Guile-Lib version 0.2.6.1 is released.
+Guile-Lib version 0.2.7 is released.
 
 ** Changes since 0.2.6
 
 Here is a summary of the changes since version 0.2.6. See Guile-Lib's
 [[http://git.savannah.nongnu.org/cgit/guile-lib.git][git summary]] and [[http://git.savannah.nongnu.org/cgit/guile-lib.git/log/][git log]] for a complete description.
 
-*** Configure step improved
+*** Configure msgs improved
 
-Explicitly using $prefix/share and $prefix/lib to define sitedir and
-siteccachedir avoid relative (unsubstituted) output which is a lot
-clearer for users.
+The configure step NOTICE and WARN msgs (the latter being displayed when
+--with-guile-site="no") have been slightly improved.
 
-Then I also improved the configure step message and the warning when
---with-guile-site="no".
+*** Guile-Lib's pkg-config file
 
-*** Variables removed in Guile-Lib's pkg-config file
-
-Thanks to the above changes, there is no need to list exec_prefix and
-datarootdir in guile-lib-1.0.pc anymore.
+Receives one more varable: guile_site.
 
 
 * June 2018
