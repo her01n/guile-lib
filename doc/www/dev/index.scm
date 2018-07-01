@@ -26,7 +26,7 @@
 
     (p "At that point you can install guile-lib with " 
        (code "make install") ", or run it uninstalled using the "
-       (code "dev-environ") " script.")
+       (code "pre-inst-env") " script.")
 
     (p "Developers with SSH access should check out "
        (code ,dev-archive-url) " instead.")
