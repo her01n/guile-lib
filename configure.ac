@@ -80,13 +80,14 @@ AC_ARG_WITH(
      guile_site="no";;
    esac],
   [guile_site="no"])
+AC_SUBST([guile_site])
 
 if test "x$guile_site" = "xyes"; then
    SITEDIR="$GUILE_GLOBAL_SITE";
    SITECCACHEDIR="$GUILE_SITE_CCACHE";
 else
-   SITEDIR="$prefix/share/guile-lib";
-   SITECCACHEDIR="$prefix/lib/guile-lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache";
+   SITEDIR="$datadir/guile-lib";
+   SITECCACHEDIR="$libdir/guile-lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache";
 fi
 AC_SUBST([SITEDIR])
 AC_SUBST([SITECCACHEDIR])
@@ -110,7 +111,12 @@ AC_OUTPUT
 AC_MSG_NOTICE(
   []
   []
-  [prefix=${prefix}]
+  [prefix=$prefix]
+  [exec_prefix=$exec_prefix]
+  [libdir=$libdir]
+  [datarootdir=$datarootdir]
+  [datadir=$datadir]
+  []
   [--with-guile-site="$guile_site"]
   []
   [sitedir (source code): ${SITEDIR}]

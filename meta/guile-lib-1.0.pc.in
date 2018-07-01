@@ -1,6 +1,12 @@
 # Package Information for pkg-config
 
 prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+guile_site=@guile_site@
 
 sitedir=@SITEDIR@
 siteccachedir=@SITECCACHEDIR@
