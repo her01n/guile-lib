@@ -2,9 +2,9 @@
 
 #+TITLE: Guile-Lib NEWS
 
-* XXX 2018
+* July 2018
 
-Guile-Lib version 0.2.7 is released.
+Guile-Lib version 0.2.6.1 is released.
 
 ** Changes since 0.2.6
 
@@ -18,7 +18,13 @@ The configure step NOTICE and WARN msgs (the latter being displayed when
 
 *** Guile-Lib's pkg-config file
 
-Receives one more varable: guile_site.
+Receives one more variable: guile_site=[yes|no].
+
+*** Bugs fixed
+
+The script pre-inst-env.in has been fixed so it properly sets
+GUILE_LOAD_PATH and GUILE_LOAD_COMPILED_PATH (thanks to Ludovic Courtès
+for reported this bug).
 
 
 * June 2018
