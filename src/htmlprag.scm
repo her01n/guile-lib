@@ -1099,7 +1099,6 @@
               (meta     . (head))
               (noframes . (frameset))
               (option   . (select))
-              (p        . (body td th))
               (param    . (applet))
               (tbody    . (table))
               (td       . (tr))
